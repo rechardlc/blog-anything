@@ -1,21 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 主题切换平滑过渡 */
+/* SnowUI 风格的主题切换平滑过渡 */
 @layer base {
   html {
     transition: color-scheme 0.3s ease;
+    scroll-behavior: smooth;
   }
 
   * {
     transition:
-      background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      fill 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      stroke 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      fill 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      stroke 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* 为某些元素禁用过渡以避免闪烁 */
@@ -27,59 +33,65 @@
   select:focus {
     transition: none;
   }
+
+  /* 自定义滚动条 - SnowUI 风格 */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Firefox 滚动条 */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
 }
 
 @layer base {
   :root {
+    /* SnowUI/ shadcn 中性浅色主题（HSL 语法） */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 222.2 47.4% 11.2%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222.2 47.4% 11.2%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-
-    /* 自定义品牌主题色 - 蓝色系 */
-    --brand-50: 214 100% 97%;
-    --brand-100: 214 95% 93%;
-    --brand-200: 213 97% 87%;
-    --brand-300: 212 96% 78%;
-    --brand-400: 213 94% 68%;
-    --brand-500: 217 91% 60%; /* 主色 */
-    --brand-600: 221 83% 53%;
-    --brand-700: 224 76% 48%;
-    --brand-800: 226 71% 40%;
-    --brand-900: 224 64% 33%;
-    --brand-950: 226 55% 20%;
-
-    /* 状态色 */
-    --success: 142 76% 36%;
-    --success-foreground: 355 7% 97%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
-    --info: 199 89% 48%;
-    --info-foreground: 210 20% 98%;
+    --ring: 221.2 83.2% 53.3%;
+    --chart-1: 221.2 83.2% 53.3%;
+    --chart-2: 142.1 76.2% 36.3%;
+    --chart-3: 38.7 92% 50.2%;
+    --chart-4: 271.1 81.3% 55.8%;
+    --chart-5: 200.4 98% 39.2%;
+    --radius: 0.75rem;
   }
 
   .dark {
+    /* SnowUI/ shadcn 中性深色主题（HSL 语法） */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -99,32 +111,11 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-
-    /* 深色模式下的品牌主题色 */
-    --brand-50: 226 55% 20%;
-    --brand-100: 224 64% 33%;
-    --brand-200: 226 71% 40%;
-    --brand-300: 224 76% 48%;
-    --brand-400: 221 83% 53%;
-    --brand-500: 217 91% 60%; /* 主色 */
-    --brand-600: 213 94% 68%;
-    --brand-700: 212 96% 78%;
-    --brand-800: 213 97% 87%;
-    --brand-900: 214 95% 93%;
-    --brand-950: 214 100% 97%;
-
-    /* 深色模式状态色 */
-    --success: 150 100% 60%;
-    --success-foreground: 150 40% 15%;
-    --warning: 38 80% 65%;
-    --warning-foreground: 45 93% 15%;
-    --info: 199 100% 70%;
-    --info-foreground: 200 50% 15%;
+    --chart-1: 221.2 83.2% 53.3%;
+    --chart-2: 142.1 76.2% 36.3%;
+    --chart-3: 38.7 92% 50.2%;
+    --chart-4: 271.1 81.3% 55.8%;
+    --chart-5: 200.4 98% 39.2%;
   }
 }
 
@@ -133,6 +124,155 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* SnowUI 专业级组件样式 */
+@layer components {
+  /* 高级玻璃态效果 */
+  .glass {
+    @apply bg-card backdrop-blur-xl border border-border shadow-xl;
+  }
+
+  /* SnowUI 专业卡片 */
+  .snow-card {
+    @apply bg-card border border-border rounded-2xl shadow-sm hover:shadow-xl hover:border-border transition-all duration-500 backdrop-blur-sm;
+  }
+
+  /* 高端按钮样式 */
+  .snow-button {
+    @apply inline-flex items-center justify-center rounded-2xl px-6 py-3 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50 shadow-md hover:shadow-lg hover:scale-105;
+  }
+
+  /* 专业侧边栏 */
+  .sidebar-nav {
+    @apply flex flex-col space-y-2 p-4;
+  }
+
+  .sidebar-nav-item {
+    @apply flex items-center rounded-2xl px-5 py-4 text-sm font-medium transition-all duration-300 hover:bg-accent hover:text-primary hover:shadow-md relative overflow-hidden;
+  }
+
+  .sidebar-nav-item.active {
+    @apply bg-primary text-primary-foreground shadow-lg border border-primary font-semibold;
+  }
+
+  .sidebar-nav-item::before {
+    @apply content-[''] absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary rounded-r-full transition-all duration-300;
+  }
+
+  .sidebar-nav-item.active::before {
+    @apply h-10 shadow-lg;
+  }
+
+  .sidebar-nav-item::after {
+    @apply content-[''] absolute inset-0 bg-gradient-to-r from-primary to-transparent opacity-0 transition-opacity duration-300;
+  }
+
+  .sidebar-nav-item:hover::after {
+    @apply opacity-20;
+  }
+
+  /* 高级输入框 */
+  .snow-input {
+    @apply flex h-12 w-full rounded-2xl border border-border bg-background px-5 py-3 text-sm ring-offset-background transition-all duration-300 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary focus-visible:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-sm;
+  }
+
+  /* 专业表格 */
+  .snow-table {
+    @apply w-full border-collapse border-spacing-0 text-sm rounded-2xl overflow-hidden shadow-sm;
+  }
+
+  .snow-table th {
+    @apply border-b border-border bg-muted px-8 py-5 text-left font-bold text-muted-foreground text-xs uppercase tracking-wider;
+  }
+
+  .snow-table td {
+    @apply border-b border-border px-8 py-5 transition-colors duration-200;
+  }
+
+  .snow-table tr:hover {
+    @apply bg-muted border-l-4 border-l-primary;
+  }
+
+  /* 专业状态徽章 */
+  .status-badge {
+    @apply inline-flex items-center rounded-full px-4 py-2 text-xs font-bold shadow-md border;
+  }
+
+  .status-badge.success {
+    @apply bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-400 dark:border-emerald-500;
+  }
+
+  .status-badge.warning {
+    @apply bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900 dark:text-amber-400 dark:border-amber-500;
+  }
+
+  .status-badge.error {
+    @apply bg-red-50 text-red-700 border-red-200 dark:bg-red-900 dark:text-red-400 dark:border-red-500;
+  }
+
+  .status-badge.info {
+    @apply bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900 dark:text-blue-400 dark:border-blue-500;
+  }
+
+  /* 专业页面标题 */
+  .page-header {
+    @apply flex flex-col space-y-3 pb-10;
+  }
+
+  .page-title {
+    @apply text-4xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent;
+  }
+
+  .page-description {
+    @apply text-muted-foreground text-xl font-medium;
+  }
+
+  /* 高级特效 */
+  .snow-gradient {
+    @apply bg-gradient-to-br from-primary via-transparent to-accent;
+  }
+
+  .snow-glow {
+    @apply shadow-2xl shadow-primary;
+  }
+
+  /* 专业数据卡片 */
+  .stats-card {
+    @apply relative overflow-hidden;
+  }
+
+  .stats-card::before {
+    @apply content-[''] absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary;
+  }
+
+  .stats-card::after {
+    @apply content-[''] absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-primary to-transparent rounded-bl-full opacity-10;
+  }
+
+  /* 现代动画 */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* 微交互效果 */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-2xl hover:shadow-primary;
   }
 }

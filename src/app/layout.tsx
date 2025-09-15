@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@/styles/globals.css';
 import { config, validateRequiredEnvVars, checkEnvConfig } from '@/lib/env';
-import ThemeProvider from '@/components/theme/ThemeProvider';
+import ThemeProvider from '@/components/providers/ThemeProvider';
 
 // 验证必需的环境变量
 validateRequiredEnvVars();
