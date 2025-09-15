@@ -1,3 +1,5 @@
-import { handlers } from '@/lib/auth';
+import NextAuthHandler from '@/lib/auth';
 
-export const { GET, POST } = handlers;
+export const runtime = 'nodejs';
+
+export { NextAuthHandler as GET, NextAuthHandler as POST };

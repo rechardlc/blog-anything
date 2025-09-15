@@ -1,15 +1,15 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import { getOptionalEnv } from '@/lib/env';
 
-const authOpts = {
+export const authOpts: NextAuthOptions = {
   providers: [
     // 只有在环境变量存在时才添加 GitHub 提供者
-    ...(getOptionalEnv('GITHUB_ID') && getOptionalEnv('GITHUB_SECRET')
+    ...(getOptionalEnv('AUTH_GITHUB_ID') && getOptionalEnv('AUTH_GITHUB_SECRET')
       ? [
           GithubProvider({
-            clientId: getOptionalEnv('GITHUB_ID'),
-            clientSecret: getOptionalEnv('GITHUB_SECRET'),
+            clientId: getOptionalEnv('AUTH_GITHUB_ID'),
+            clientSecret: getOptionalEnv('AUTH_GITHUB_SECRET'),
           }),
         ]
       : []),
@@ -21,7 +21,4 @@ const authOpts = {
   secret: getOptionalEnv('NEXTAUTH_SECRET', 'fallback-secret-for-development'),
 };
 
-const nextAuth = NextAuth(authOpts);
-
-export const { handlers, auth, signIn, signOut } = nextAuth;
-export { authOpts };
+export default NextAuth(authOpts);
