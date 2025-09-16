@@ -302,3 +302,5 @@ analyze/
 # Deployment scripts (if sensitive)
 /scripts/deploy.sh
 /scripts/secrets.sh
+
+/src/generated/prisma

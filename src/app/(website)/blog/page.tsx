@@ -1,4 +1,4 @@
-import Card from "@/website/blog/components/Card"
+import Card from '@/website/blog/components/Card';
 export default function Page() {
   return (
     <>

@@ -17,28 +17,28 @@ const getPosition = () => {
 const Navs = (props: { navsList: Nav[] }) => {
   return (
     <div className='flex items-center space-x-4 md:space-x-4'>
-          {props.navsList.map(nav => { 
-              return (
-                <Link
-                  key={nav.id}
-                  href={nav.href}
-                  className={cn(
-                    'px-4 py-2 text-sm font-medium text-zinc-800 dark:text-zinc-100',
-                    'rounded-[8px] overflow-hidden hover:before:block',
-                    'dark:hover:text-zinc-50 transition-colors duration-200',
-                    'whitespace-nowrap hover:scale-105 relative',
-                    "before:content-[''] before:absolute before:h-[200%] before:w-[200%]",
-                    'before:bg-zinc-800 dark:before:bg-zinc-100 before:-z-10',
-                    `before:top-[50%] before:left-[50%] before:origin-top-left`,
-                    'before:animate-spin-constant-slow before:hidden',
-                    "after:content-[''] after:absolute after:inset-[2px] after:bg-zinc-50",
-                    'after:rounded-[inherit] after:-z-[1] after:dark:bg-zinc-800'
-                  )}
-                >
-                  {nav.name}
-                </Link>
-              );
-          })}
+      {props.navsList.map(nav => {
+        return (
+          <Link
+            key={nav.id}
+            href={nav.href}
+            className={cn(
+              'px-4 py-2 text-sm font-medium text-zinc-800 dark:text-zinc-100',
+              'rounded-[8px] overflow-hidden hover:before:block',
+              'dark:hover:text-zinc-50 transition-colors duration-200',
+              'whitespace-nowrap hover:scale-105 relative',
+              "before:content-[''] before:absolute before:h-[200%] before:w-[200%]",
+              'before:bg-zinc-800 dark:before:bg-zinc-100 before:-z-10',
+              `before:top-[50%] before:left-[50%] before:origin-top-left`,
+              'before:animate-spin-constant-slow before:hidden',
+              "after:content-[''] after:absolute after:inset-[2px] after:bg-zinc-50",
+              'after:rounded-[inherit] after:-z-[1] after:dark:bg-zinc-800'
+            )}
+          >
+            {nav.name}
+          </Link>
+        );
+      })}
     </div>
   );
 };
