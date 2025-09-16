@@ -107,6 +107,16 @@ export const config = {
     s3Bucket: getOptionalEnv('AWS_S3_BUCKET'),
   },
 
+  // OAuth 认证配置
+  auth: {
+    githubId: getOptionalEnv('AUTH_GITHUB_ID'),
+    githubSecret: getOptionalEnv('AUTH_GITHUB_SECRET'),
+    googleId: getOptionalEnv('AUTH_GOOGLE_ID'),
+    googleSecret: getOptionalEnv('AUTH_GOOGLE_SECRET'),
+    nextAuthSecret: getOptionalEnv('NEXTAUTH_SECRET'),
+    nextAuthUrl: getOptionalEnv('NEXTAUTH_URL', 'http://localhost:3000'),
+  },
+
   // 社交媒体配置
   social: {
     githubUrl: getOptionalEnv('NEXT_PUBLIC_GITHUB_URL'),

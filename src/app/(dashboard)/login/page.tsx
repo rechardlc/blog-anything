@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import { useForm } from 'react-hook-form';
@@ -65,6 +65,10 @@ const Login = () => {
   const { theme, setTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    console.log(session, 'session');
+  }, [session]);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -210,11 +214,16 @@ const Login = () => {
       icon: Chrome,
       color: 'hover:bg-red-50 dark:hover:bg-red-950/20',
       variant: 'outline' as const,
-      disabled: true,
+      disabled: false,
       onClick: () => {
-        form.setError('root', {
-          message: 'Google 登录功能暂未配置',
-        });
+        try {
+          signIn('google');
+        } catch (error) {
+          console.error('Google 登录失败:', error);
+          form.setError('root', {
+            message: 'Google 登录暂不可用，请使用账号密码登录',
+          });
+        }
       },
     },
     {
@@ -298,6 +307,7 @@ const Login = () => {
                           <Input
                             placeholder='请输入用户名'
                             className='pl-10'
+                            autoComplete='username'
                             {...field}
                           />
                         </div>
@@ -321,6 +331,7 @@ const Login = () => {
                             type={showPassword ? 'text' : 'password'}
                             placeholder='请输入密码'
                             className='pl-10 pr-10'
+                            autoComplete='current-password'
                             {...field}
                           />
                           <button
