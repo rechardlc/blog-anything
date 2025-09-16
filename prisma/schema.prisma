@@ -26,13 +26,19 @@ datasource db {
 // 用户基础信息表
 model User {
   id        String   @id @default(uuid())
-  username  String   @unique
+  username  String?  @unique  // 改为可选，因为 OAuth 用户可能没有用户名
   email     String   @unique
-  password  String
+  password  String?  // 改为可选，因为 OAuth 用户不需要密码
+  name      String?  // 添加显示名称
+  image     String?  // 添加头像 URL
   avatar    String?
   bio       String?
   website   String?
   location  String?
+  
+  // OAuth 相关字段
+  githubId  Int?  @unique
+  githubUsername String?
   
   // 用户状态
   isActive  Boolean  @default(true)
@@ -47,6 +53,8 @@ model User {
   updatedAt DateTime @updatedAt
   
   // 关联关系
+  accounts     Account[]
+  sessions     Session[]
   posts        Post[]
   comments     Comment[]
   likes        Like[]
@@ -56,6 +64,50 @@ model User {
   
   @@map("users")
 }
+
+
+// OAuth 账户表
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// 会话表
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// 验证令牌表
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
 
 // 用户设置表
 model UserSettings {
