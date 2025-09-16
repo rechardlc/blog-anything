@@ -1,0 +1,33 @@
+// 用户基础信息表
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  avatar    String?
+  bio       String?
+  website   String?
+  location  String?
+  
+  // 用户状态
+  isActive  Boolean  @default(true)
+  isEmailVerified Boolean @default(false)
+  emailVerifiedAt DateTime?
+  
+  // 用户设置
+  settings  UserSettings?
+  
+  // 时间戳
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 关联关系
+  posts        Post[]
+  comments     Comment[]
+  likes        Like[]
+  follows      Follow[] @relation("UserFollows")
+  followers    Follow[] @relation("UserFollowers")
+  activityLogs ActivityLog[]
+  
+  @@map("users")
+}

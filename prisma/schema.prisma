@@ -1,0 +1,341 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 在 Prisma 中，@ 符号用于声明字段属性（Field Attributes）
+// 和块属性（Block Attributes），
+// 用于定义模型字段的特性、约束或行为。以下是常用的 @ 开头的属性及其含义：
+
+// 业务模型引入 - 使用正确的 Prisma 语法
+// 注意：Prisma 不支持文件拆分，这里我们使用注释标记不同业务域
+
+// ==================== 用户相关模型 ====================
+
+// 用户基础信息表
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  avatar    String?
+  bio       String?
+  website   String?
+  location  String?
+  
+  // 用户状态
+  isActive  Boolean  @default(true)
+  isEmailVerified Boolean @default(false)
+  emailVerifiedAt DateTime?
+  
+  // 用户设置
+  settings  UserSettings?
+  
+  // 时间戳
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 关联关系
+  posts        Post[]
+  comments     Comment[]
+  likes        Like[]
+  follows      Follow[] @relation("UserFollows")
+  followers    Follow[] @relation("UserFollowers")
+  activityLogs ActivityLog[]
+  
+  @@map("users")
+}
+
+// 用户设置表
+model UserSettings {
+  id       String @id @default(uuid())
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // 主题设置
+  theme    String @default("system") // light, dark, system
+  language String @default("zh-CN")
+  
+  // 通知设置
+  emailNotifications    Boolean @default(true)
+  pushNotifications     Boolean @default(true)
+  commentNotifications  Boolean @default(true)
+  likeNotifications     Boolean @default(true)
+  followNotifications   Boolean @default(true)
+  
+  // 隐私设置
+  profilePublic    Boolean @default(true)
+  showEmail        Boolean @default(false)
+  showLocation     Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("user_settings")
+}
+
+// 用户关注关系表
+model Follow {
+  id          String @id @default(uuid())
+  followerId  String
+  followingId String
+  
+  follower    User @relation("UserFollows", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([followerId, followingId])
+  @@map("follows")
+}
+
+// ==================== 博客相关模型 ====================
+
+// 博客文章表
+model Post {
+  id          String      @id @default(uuid())
+  title       String
+  slug        String      @unique
+  content     String      @db.Text
+  excerpt     String?
+  coverImage  String?
+  
+  // 文章状态
+  status      PostStatus  @default(DRAFT)
+  visibility  PostVisibility @default(PUBLIC)
+  
+  // SEO 相关
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String[]
+  
+  // 统计数据
+  viewCount    Int @default(0)
+  likeCount    Int @default(0)
+  commentCount Int @default(0)
+  
+  // 发布信息
+  authorId     String
+  author       User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  publishedAt  DateTime?
+  
+  // 时间戳
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 关联关系
+  categories   PostCategory[]
+  tags         PostTag[]
+  comments     Comment[]
+  likes        Like[]
+  
+  @@map("posts")
+}
+
+// 文章状态枚举
+enum PostStatus {
+  DRAFT     // 草稿
+  PUBLISHED // 已发布
+  ARCHIVED  // 已归档
+  DELETED   // 已删除
+}
+
+// 文章可见性枚举
+enum PostVisibility {
+  PUBLIC   // 公开
+  PRIVATE  // 私有
+  UNLISTED // 不公开列出
+}
+
+// 分类表
+model Category {
+  id          String @id @default(uuid())
+  name        String @unique
+  slug        String @unique
+  description String?
+  color       String? // 分类颜色
+  icon        String? // 分类图标
+  
+  // 层级关系
+  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  
+  // 统计
+  postCount   Int @default(0)
+  
+  // 排序权重
+  sortOrder   Int @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 关联关系
+  posts PostCategory[]
+  
+  @@map("categories")
+}
+
+// 标签表
+model Tag {
+  id        String @id @default(uuid())
+  name      String @unique
+  slug      String @unique
+  color     String? // 标签颜色
+  
+  // 统计
+  postCount Int @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 关联关系
+  posts PostTag[]
+  
+  @@map("tags")
+}
+
+// 文章-分类关联表
+model PostCategory {
+  postId     String
+  categoryId String
+  
+  post     Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@id([postId, categoryId])
+  @@map("post_categories")
+}
+
+// 文章-标签关联表
+model PostTag {
+  postId String
+  tagId  String
+  
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@id([postId, tagId])
+  @@map("post_tags")
+}
+
+// ==================== 评论相关模型 ====================
+
+// 评论表
+model Comment {
+  id        String        @id @default(uuid())
+  content   String        @db.Text
+  status    CommentStatus @default(PENDING)
+  
+  // 关联文章
+  postId    String
+  post      Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  // 评论作者
+  authorId  String
+  author    User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // 层级评论
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  
+  // 统计
+  likeCount Int @default(0)
+  
+  // IP 地址和 User Agent（用于反垃圾）
+  ipAddress String?
+  userAgent String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 关联关系
+  likes Like[]
+  
+  @@map("comments")
+}
+
+// 评论状态枚举
+enum CommentStatus {
+  PENDING  // 待审核
+  APPROVED // 已通过
+  REJECTED // 已拒绝
+  SPAM     // 垃圾评论
+}
+
+// ==================== 互动相关模型 ====================
+
+// 点赞表
+model Like {
+  id     String   @id @default(uuid())
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // 点赞目标（文章或评论）
+  postId    String?
+  commentId String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  // 确保用户对同一个目标只能点赞一次
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+  @@map("likes")
+}
+
+// ==================== 系统相关模型 ====================
+
+// 系统配置表
+model SystemConfig {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String @db.Text
+  type  String @default("string") // string, number, boolean, json
+  
+  description String?
+  category    String? // 配置分类
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("system_configs")
+}
+
+// 操作日志表
+model ActivityLog {
+  id       String @id @default(uuid())
+  action   String // 操作类型
+  resource String // 资源类型
+  resourceId String? // 资源ID
+  
+  // 操作者信息
+  userId   String?
+  user     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // 操作详情
+  details  Json?   // 操作详细信息
+  ipAddress String?
+  userAgent String?
+  
+  createdAt DateTime @default(now())
+  
+  @@map("activity_logs")
+}

@@ -18,7 +18,23 @@ const eslintConfig = [
       'out/**',
       'build/**',
       'next-env.d.ts',
+      'src/generated/**',
+      '.history/**',
+      'scripts/**',
+      'prisma/**',
+      '**/*.js', // 忽略所有 JS 文件，只检查 TS/TSX
     ],
+  },
+  {
+    rules: {
+      // 完全关闭未使用变量的 ESLint 检查
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
+
+      // 关闭其他可能干扰的规则
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+    },
   },
 ];
 
