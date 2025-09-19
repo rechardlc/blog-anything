@@ -9,3 +9,6 @@ build
 .env.test.local
 .env.production.local
 .env.*
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
