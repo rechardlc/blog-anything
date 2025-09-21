@@ -19,7 +19,7 @@
     "pre-commit": "lint-staged",
     "type-check": "tsc --noEmit",
     "ganache": "npx ganache",
-    "truffle:migrate": "npx truffle migrate"
+    "truffle:dev": "npx truffle migrate --reset --compile-all --network development"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
