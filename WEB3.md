@@ -6,3 +6,4 @@
 2. truffle 本地开发环境
    - pnpm add truffle
    - npx truffle init
+   - npx truffle:migrate [ˈtrʌf(ə)l][ˈmaɪˌɡreɪt]
