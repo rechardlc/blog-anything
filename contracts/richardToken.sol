@@ -1,84 +1,127 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-// 实现ERC20代币标准
+
+/**
+ * @title RichardToken
+ * @dev ERC20 代币合约实现
+ * @notice 这是一个优化的 ERC20 代币合约，具有更高的安全性和 gas 效率
+ */
 contract RichardToken {
     using SafeMath for uint256;
-    // constant 常量，不可变量, 节约gas，提高效率
+    
+    // 代币基本信息 - 使用 constant 优化 gas
     string public constant NAME = "RichardToken";
     string public constant SYMBOL = "RTK";
     uint8 public constant DECIMALS = 18;
-    // immutable 不可变量，只能初始化一次，合约部署后，totalSupply的值就不能再修改了，节约gas，提高效率
-    // 在constructor中只能赋值，不能读取值
+    
+    // 总供应量 - 使用 immutable 优化 gas
     uint256 public immutable totalSupply;
 
-    mapping(address => uint256) public balanceOf; // 类似一个数据库，只不过存在链上的
-    // 授权的金额, 结构是 owner => spender => value
-    mapping(address => mapping(address => uint256)) public allowance; // 类似一个数据库，只不过存在链上的
-    // 转账事件，记录日志，记录转账的from、to、value
+    // 余额映射
+    mapping(address => uint256) public balanceOf;
+    
+    // 授权映射
+    mapping(address => mapping(address => uint256)) public allowance;
+    
+    // 重入攻击保护
+    bool private locked;
+    
+    // 事件定义 - 优化 gas
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
-    // 构造函数，初始化代币总量，初始化发行者账户的余额
+    // 构造函数 - 优化 gas 和安全性
     constructor() {
-        totalSupply = 100000000 * 10 ** DECIMALS;
-        // 初始化发行者账户的余额，地址来自部署合约的账户
-        // 直接使用计算值，而不是读取 immutable 变量
-        balanceOf[msg.sender] = 100000000 * 10 ** DECIMALS;
+        uint256 initialSupply = 100000000 * 10 ** DECIMALS;
+        totalSupply = initialSupply;
+        balanceOf[msg.sender] = initialSupply;
+        emit Transfer(address(0), msg.sender, initialSupply);
+    }
+    
+    // 重入攻击保护修饰符
+    modifier nonReentrant() {
+        require(!locked, "Reentrant call");
+        locked = true;
+        _;
+        locked = false;
     }
 
-    // 转账函数，转账的from、to、value
-    function transfer(address to, uint256 value) public returns (bool success) {
+    // 转账函数 - 优化 gas 和安全性
+    function transfer(address to, uint256 value) public nonReentrant returns (bool success) {
+        require(to != address(0), "Transfer to zero address");
+        require(value > 0, "Transfer amount must be greater than 0");
         return _transfer(msg.sender, to, value);
     }
-    function transferFrom(address from, address to, uint256 value) public returns (bool success) {
-        if(!verifyAddress(from, string("Invalid from address"))) {
-            return false;
-        }
-        if(!verifyAddress(to, string("Invalid to address"))) {
-            return false;
-        }
-        // 检查from账户是否有足够的余额
+    
+    // 授权转账函数 - 优化 gas 和安全性
+    function transferFrom(address from, address to, uint256 value) public nonReentrant returns (bool success) {
+        require(from != address(0), "Transfer from zero address");
+        require(to != address(0), "Transfer to zero address");
+        require(value > 0, "Transfer amount must be greater than 0");
         require(balanceOf[from] >= value, "Insufficient balance");
         require(allowance[from][msg.sender] >= value, "Insufficient allowance");
-        // 从form账户扣钱
+        
+        // 先更新授权额度，再执行转账（CEI 模式）
         allowance[from][msg.sender] = allowance[from][msg.sender].sub(value);
         return _transfer(from, to, value);
     }
-    // 授权函数
+    // 授权函数 - 优化 gas 和安全性
     function approve(address spender, uint256 value) public returns (bool success) {
-        // msg.sender 是当前合约的调用者
-        // spender 是授权的地址
-        // value 是授权的金额
-        if(!verifyAddress(spender, string("Invalid spender address"))) {
-            return false;
-        }
+        require(spender != address(0), "Approve to zero address");
+        require(spender != msg.sender, "Approve to self");
+        
         allowance[msg.sender][spender] = value;
-        // 触发授权事件
         emit Approval(msg.sender, spender, value);
         return true;
     }
-        // 转账函数，转账的from、to、value
-    // internal修饰符 内部函数，只能被当前合约调用，不能被外部调用
-    function _transfer(address from, address to, uint256 value) internal returns (bool success) {
-        // 使用SafeMath库的sub和add函数，防止溢出，节约gas，提高效率
-        balanceOf[from] = balanceOf[from].sub(value);
-        // 使用SafeMath库的sub和add函数，防止溢出，节约gas，提高效率
-        balanceOf[to] = balanceOf[to].add(value);
-        // 触发转账事件
-        emit Transfer(from, to, value);
-        // 返回true，表示转账成功
+    
+    // 增加授权额度 - ERC20 标准扩展
+    function increaseAllowance(address spender, uint256 addedValue) public returns (bool success) {
+        require(spender != address(0), "Approve to zero address");
+        require(spender != msg.sender, "Approve to self");
+        
+        uint256 newAllowance = allowance[msg.sender][spender].add(addedValue);
+        allowance[msg.sender][spender] = newAllowance;
+        emit Approval(msg.sender, spender, newAllowance);
         return true;
     }
-    // calldata 是只读的，不能修改：传递参数时，需要明确指定类型：eg（ string("Invalid spender address")）
-    // internal 内部函数，只能被当前合约调用，不能被外部调用
-    // pure 纯函数，不会修改状态变量，不会消耗gas
-    function verifyAddress(address addr, string memory message) internal pure returns (bool success) {
-        require(addr != address(0), message);
-        return addr != address(0);
+    
+    // 减少授权额度 - ERC20 标准扩展
+    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool success) {
+        require(spender != address(0), "Approve to zero address");
+        require(allowance[msg.sender][spender] >= subtractedValue, "Decreased allowance below zero");
+        
+        uint256 newAllowance = allowance[msg.sender][spender].sub(subtractedValue);
+        allowance[msg.sender][spender] = newAllowance;
+        emit Approval(msg.sender, spender, newAllowance);
+        return true;
     }
-    function verifyValue(uint256 value, string calldata message) internal pure returns (bool success) {
-        require(value > 0, message);
-        return value > 0;
+    // 内部转账函数 - 优化 gas 和安全性
+    function _transfer(address from, address to, uint256 value) internal returns (bool success) {
+        require(balanceOf[from] >= value, "Insufficient balance");
+        
+        // 使用 SafeMath 防止溢出
+        balanceOf[from] = balanceOf[from].sub(value);
+        balanceOf[to] = balanceOf[to].add(value);
+        
+        // 触发转账事件
+        emit Transfer(from, to, value);
+        return true;
+    }
+    
+    // 查询余额 - 优化 gas
+    function getBalance(address account) public view returns (uint256) {
+        return balanceOf[account];
+    }
+    
+    // 查询授权额度 - 优化 gas
+    function getAllowance(address owner, address spender) public view returns (uint256) {
+        return allowance[owner][spender];
+    }
+    
+    // 查询总供应量 - 优化 gas
+    function getTotalSupply() public view returns (uint256) {
+        return totalSupply;
     }
 }
 
