@@ -18,7 +18,7 @@
     "format:check": "prettier --check .",
     "pre-commit": "lint-staged",
     "type-check": "tsc --noEmit",
-    "ganache": "npx ganache",
+    "ganache": "npx ganache -d",
     "truffle:dev": "npx truffle migrate --reset --compile-all --network development"
   },
   "dependencies": {

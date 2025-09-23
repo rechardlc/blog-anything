@@ -202,7 +202,7 @@ contract Exchange {
         // 存储订单
         orders[orderHash] = newOrder;
         
-        emit OrderCreated(orderHash, msg.sender, _tokenGet, _tokenGetAmount, _tokenGive, _tokenGiveAmount);
+        emit OrderCreated(orderHash, msg.sender, _tokenGet, _tokenGetAmount, _tokenGive, _tokenGiveAmount, block.timestamp);
     }
     
     // 取消订单 - 使用哈希 ID
@@ -226,16 +226,15 @@ contract Exchange {
         require(!order.filled, "Order already filled");
         require(!order.cancelled, "Order cancelled");
         require(order.user != msg.sender, "Cannot fill own order");
+
+                // 计算手续费
+        uint256 feeAmount = order.tokenGetAmount.mul(feePercentage).div(10000);
         
         // 流动池子是否有足够的代币
-        // require(tokens[order.tokenGet][order.user] >= order.tokenGetAmount, "Insufficient balance");
+        require(tokens[order.tokenGive][order.user] >= order.tokenGiveAmount, "Order owner insufficient balance");
+        require(tokens[order.tokenGet][msg.sender] >= order.tokenGetAmount.add(feeAmount), "Filler insufficient balance");
         
-        // 计算成交比例: 1 RTK: 100ETH 关系， 固定关系
-        // uint256 giveAmount = order.tokenGetAmount.mul(order.tokenGiveAmount).div(order.tokenGetAmount);
-        // require(tokens[order.tokenGive][order.user] >= order.tokenGiveAmount, "Order owner insufficient balance");
-        
-        // 计算手续费
-        uint256 feeAmount = order.tokenGetAmount.mul(feePercentage).div(10000);
+        // 计算成交比例: 1 RTK: 100ETH 关系， 固定关系,后期左流动池子，动态换算
         // 手续费账户增加
         tokens[order.tokenGet][feeAccount] = tokens[order.tokenGet][feeAccount].add(feeAmount);
         // 发起者减少

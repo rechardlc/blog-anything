@@ -59,12 +59,7 @@ module.exports = {
    * $ truffle test --network <network-name>
    */
   // 自定义编译输出目录
-  build: {
-    // 编译后的合约文件（ABI、字节码等）将输出到该目录
-    contracts: {
-      dir: './truffle-builds', // 自定义路径
-    },
-  },
+  contracts_build_directory: './src/contracts',
 
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
