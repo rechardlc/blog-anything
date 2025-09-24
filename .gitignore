@@ -30,6 +30,8 @@ bun.lockb
 # Production builds
 /build
 /dist
+artifacts/
+cache/
 
 # Vercel
 .vercel

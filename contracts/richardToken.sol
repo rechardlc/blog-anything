@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+pragma solidity ^0.8.0;
 
 /**
  * @title RichardToken
- * @dev ERC20 代币合约实现
+ * @dev ERC20标准 代币合约实现
  * @notice 这是一个优化的 ERC20 代币合约，具有更高的安全性和 gas 效率
  */
 contract RichardToken {
-    using SafeMath for uint256;
     
     // 代币基本信息 - 使用 constant 优化 gas
     string public constant NAME = "RichardToken";
@@ -32,7 +30,8 @@ contract RichardToken {
     event Approval(address indexed owner, address indexed spender, uint256 value);
     // 构造函数 - 优化 gas 和安全性
     constructor() {
-        uint256 initialSupply = 100000000 * 10 ** DECIMALS;
+        // 这个是一个科学计数法
+        uint256 initialSupply = 10000 * 10 ** DECIMALS;
         totalSupply = initialSupply;
         balanceOf[msg.sender] = initialSupply;
         emit Transfer(address(0), msg.sender, initialSupply);
@@ -62,7 +61,7 @@ contract RichardToken {
         require(allowance[from][msg.sender] >= value, "Insufficient allowance");
         
         // 先更新授权额度，再执行转账（CEI 模式）
-        allowance[from][msg.sender] = allowance[from][msg.sender].sub(value);
+        allowance[from][msg.sender] = allowance[from][msg.sender] - value;
         return _transfer(from, to, value);
     }
     // 授权函数 - 优化 gas 和安全性
@@ -80,7 +79,7 @@ contract RichardToken {
         require(spender != address(0), "Approve to zero address");
         require(spender != msg.sender, "Approve to self");
         
-        uint256 newAllowance = allowance[msg.sender][spender].add(addedValue);
+        uint256 newAllowance = allowance[msg.sender][spender] + addedValue;
         allowance[msg.sender][spender] = newAllowance;
         emit Approval(msg.sender, spender, newAllowance);
         return true;
@@ -91,7 +90,7 @@ contract RichardToken {
         require(spender != address(0), "Approve to zero address");
         require(allowance[msg.sender][spender] >= subtractedValue, "Decreased allowance below zero");
         
-        uint256 newAllowance = allowance[msg.sender][spender].sub(subtractedValue);
+        uint256 newAllowance = allowance[msg.sender][spender] - subtractedValue;
         allowance[msg.sender][spender] = newAllowance;
         emit Approval(msg.sender, spender, newAllowance);
         return true;
@@ -100,9 +99,8 @@ contract RichardToken {
     function _transfer(address from, address to, uint256 value) internal returns (bool success) {
         require(balanceOf[from] >= value, "Insufficient balance");
         
-        // 使用 SafeMath 防止溢出
-        balanceOf[from] = balanceOf[from].sub(value);
-        balanceOf[to] = balanceOf[to].add(value);
+        balanceOf[from] = balanceOf[from] - value;
+        balanceOf[to] = balanceOf[to] + value;
         
         // 触发转账事件
         emit Transfer(from, to, value);

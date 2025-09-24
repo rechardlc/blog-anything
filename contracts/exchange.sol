@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+pragma solidity ^0.8.0;
 
-import "./richardToken.sol";
+import "./RichardToken.sol";
 
 contract Exchange {
-    using SafeMath for uint256;
     
     // 收费账户地址
     address public immutable feeAccount;
@@ -67,7 +65,7 @@ contract Exchange {
             _tokenGive,
             _tokenGiveAmount,
             block.timestamp,
-            block.difficulty,
+            block.prevrandao,
             block.coinbase,
             block.number,
             msg.sender,
@@ -103,7 +101,7 @@ contract Exchange {
     // ETH 存款 - 添加重入保护
     function depositEther() public payable nonReentrant {
         require(msg.value > 0, "Amount must be greater than 0");
-        tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].add(msg.value);
+        tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender] + msg.value;
         emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
     }
     
@@ -114,7 +112,7 @@ contract Exchange {
         require(_amount > 0, "Amount must be greater than 0");
         
         // 先更新余额，再转账（防止重入攻击）
-        tokens[_token][msg.sender] = tokens[_token][msg.sender].add(_amount);
+        tokens[_token][msg.sender] = tokens[_token][msg.sender] + _amount;
         
         // 执行转账
         require(RichardToken(_token).transferFrom(msg.sender, address(this), _amount), "Transfer failed");
@@ -128,7 +126,7 @@ contract Exchange {
         require(tokens[ETHER][msg.sender] >= _amount, "Insufficient balance");
         
         // 先更新余额
-        tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].sub(_amount);
+        tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender] - _amount;
         
         // 使用 call 而不是 transfer，避免 gas 限制问题
         (bool success, ) = payable(msg.sender).call{value: _amount}("");
@@ -145,7 +143,7 @@ contract Exchange {
         require(tokens[_token][msg.sender] >= _amount, "Insufficient balance");
         
         // 先更新余额
-        tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
+        tokens[_token][msg.sender] = tokens[_token][msg.sender] - _amount;
         
         // 执行转账
         require(RichardToken(_token).transfer(msg.sender, _amount), "Transfer failed");
@@ -228,15 +226,15 @@ contract Exchange {
         require(order.user != msg.sender, "Cannot fill own order");
 
                 // 计算手续费
-        uint256 feeAmount = order.tokenGetAmount.mul(feePercentage).div(10000);
+        uint256 feeAmount = (order.tokenGetAmount * feePercentage) / 10000;
         
         // 流动池子是否有足够的代币
         require(tokens[order.tokenGive][order.user] >= order.tokenGiveAmount, "Order owner insufficient balance");
-        require(tokens[order.tokenGet][msg.sender] >= order.tokenGetAmount.add(feeAmount), "Filler insufficient balance");
+        require(tokens[order.tokenGet][msg.sender] >= order.tokenGetAmount + feeAmount, "Filler insufficient balance");
         
         // 计算成交比例: 1 RTK: 100ETH 关系， 固定关系,后期左流动池子，动态换算
         // 手续费账户增加
-        tokens[order.tokenGet][feeAccount] = tokens[order.tokenGet][feeAccount].add(feeAmount);
+        tokens[order.tokenGet][feeAccount] = tokens[order.tokenGet][feeAccount] + feeAmount;
         // 发起者减少
         // tokens[order.tokenGet][msg.sender] = tokens[order.tokenGet][msg.sender].sub(feeAmount);
 
@@ -244,13 +242,13 @@ contract Exchange {
         // 先更新余额，再转账（防止重入攻击）
         // get是获取的币，give是减少的币
         // 创建者的币，tokenget币应该是增加
-        tokens[order.tokenGet][order.user] = tokens[order.tokenGet][order.user].add(order.tokenGetAmount);
+        tokens[order.tokenGet][order.user] = tokens[order.tokenGet][order.user] + order.tokenGetAmount;
         // 发起者是币，tokenGet币应该是减少
-        tokens[order.tokenGet][msg.sender] = tokens[order.tokenGet][msg.sender].sub(order.tokenGetAmount.add(feeAmount));
+        tokens[order.tokenGet][msg.sender] = tokens[order.tokenGet][msg.sender] - (order.tokenGetAmount + feeAmount);
         // 币币交换
-        tokens[order.tokenGive][order.user] = tokens[order.tokenGive][order.user].sub(order.tokenGiveAmount);
+        tokens[order.tokenGive][order.user] = tokens[order.tokenGive][order.user] - order.tokenGiveAmount;
         // 发起者是币，tokenGive币应该是减少
-        tokens[order.tokenGive][msg.sender] = tokens[order.tokenGive][msg.sender].add(order.tokenGiveAmount);        
+        tokens[order.tokenGive][msg.sender] = tokens[order.tokenGive][msg.sender] + order.tokenGiveAmount;        
         // 更新订单状态
         order.filled = true;
         emit OrderFilled(_orderHash, order.user, msg.sender, order.tokenGetAmount, block.timestamp);

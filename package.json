@@ -18,8 +18,7 @@
     "format:check": "prettier --check .",
     "pre-commit": "lint-staged",
     "type-check": "tsc --noEmit",
-    "ganache": "npx ganache -d",
-    "truffle:dev": "npx truffle migrate --reset --compile-all --network development"
+    "local:blockchain": "npx hardhat node --port 9999"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -55,7 +54,6 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
-    "ganache": "^7.9.2",
     "lucide-react": "^0.542.0",
     "next": "15.5.2",
     "next-auth": "^4.24.11",
@@ -68,7 +66,6 @@
     "react-resizable-panels": "^3.0.5",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
-    "truffle": "^5.11.5",
     "vaul": "^1.1.2",
     "zod": "^4.1.5"
   },
@@ -76,12 +73,16 @@
     "@commitlint/cli": "^19.6.0",
     "@commitlint/config-conventional": "^19.6.0",
     "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
+    "@nomicfoundation/hardhat-ignition": "3.0.0",
+    "@nomicfoundation/hardhat-toolbox-viem": "5.0.0",
+    "@types/node": "^22.8.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
+    "hardhat": "3.0.6",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
     "only-allow": "^1.2.1",
@@ -90,7 +91,8 @@
     "prisma": "^6.16.1",
     "shadcn": "^3.2.1",
     "tailwindcss": "^3.4.15",
-    "typescript": "^5"
+    "typescript": "^5.8.3",
+    "viem": "2.30.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -100,5 +102,6 @@
     "*.{json,css,scss,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "type": "module"
 }
