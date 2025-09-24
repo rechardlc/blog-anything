@@ -38,7 +38,8 @@ describe('Counter', async function () {
     // check that the aggregated events match the current value
     let total = 0n;
     for (const event of events) {
-      total += event.args.by;
+      const args = event.args as { by: bigint };
+      total += args.by;
     }
 
     assert.equal(total, await counter.read.x());
