@@ -2,6 +2,7 @@
 
 import { Account, User } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
+import type { Prisma } from '@prisma/client';
 import type { GithubProfile } from 'next-auth/providers/github';
 
 /**
@@ -34,7 +35,7 @@ const loginWithGithub = async (account: Account & GithubProfile) => {
       return existingAccount.user;
     }
     // 如果不存在，那么创建用户和Account，开启一个事务，保证数据一致性
-    await prisma.$transaction(async tx => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const { avatar_url, email } = account;
       const user = await tx.user.create({
         data: {
