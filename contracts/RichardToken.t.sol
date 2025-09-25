@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
-import {RichardToken} from "./RichardToken.sol";
+import {RichardToken} from "./richardToken.sol";
 import {Test} from "forge-std/Test.sol";
 
 import {console} from "forge-std/console.sol";

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Exchange} from "./Exchange.sol";
-import {RichardToken} from "./RichardToken.sol";
+import {RichardToken} from "./richardToken.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract ExchangeTest is Test {
