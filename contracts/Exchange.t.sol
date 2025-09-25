@@ -13,6 +13,7 @@ contract ExchangeTest is Test {
     // 被测合约与依赖
     Exchange internal exchange;
     RichardToken internal token;
+    RichardToken internal tokenB; // 第二个代币，用于撮合对
 
     // 账户
     address internal feeAccount;
@@ -45,6 +46,7 @@ contract ExchangeTest is Test {
         feeAccount = address(0xFEE);
         feePercentage = 100; // 1%
         token = new RichardToken();
+        tokenB = new RichardToken();
         exchange = new Exchange(feeAccount, feePercentage);
 
         maker = address(0xA11CE);
@@ -60,6 +62,9 @@ contract ExchangeTest is Test {
         // 从本合约转给 maker、filler
         token.transfer(maker, amount / 2);
         token.transfer(filler, amount / 4);
+        // 为 tokenB 也分配一些余额
+        tokenB.transfer(filler, amount / 2);
+        tokenB.transfer(maker, amount / 4);
     }
 
     // ===== 存取款 =====
@@ -115,10 +120,10 @@ contract ExchangeTest is Test {
 
     // ===== 订单生命周期：创建、撤销、成交 =====
     function test_MakeAndCancelOrder() public {
-        uint256 giveAmount = 300 * (10 ** token.DECIMALS());
-        uint256 getAmount = 3 ether;
+        uint256 giveAmount = 300 * (10 ** token.DECIMALS()); // maker 给出 token (A)
+        uint256 getAmount = 500 * (10 ** tokenB.DECIMALS()); // maker 想得到 tokenB
 
-        // maker 先将 token 存入交易所
+        // maker 先将 token(A) 存入交易所
         vm.prank(maker);
         token.approve(address(exchange), giveAmount);
         vm.prank(maker);
@@ -127,7 +132,7 @@ contract ExchangeTest is Test {
         // 监听日志，获取订单哈希
         vm.recordLogs();
         vm.prank(maker);
-        exchange.makeOrder(ETHER, getAmount, address(token), giveAmount);
+        exchange.makeOrder(address(tokenB), getAmount, address(token), giveAmount);
         Vm.Log[] memory entries = vm.getRecordedLogs();
         // 最后一条应为 OrderCreated
         bytes32 orderHash = entries[entries.length - 1].topics[1];
@@ -153,52 +158,53 @@ contract ExchangeTest is Test {
     }
 
     function test_FillOrder_EndToEnd() public {
-        uint256 giveAmount = 200 * (10 ** token.DECIMALS()); // maker 给出 token
-        uint256 getAmount = 2 ether;                          // maker 想得到 ETH
+        uint256 giveAmount = 200 * (10 ** token.DECIMALS());   // maker 给出 token(A)
+        uint256 getAmount = 500 * (10 ** tokenB.DECIMALS());   // maker 想得到 tokenB
 
-        // maker：准备 token 余额（授权+存入）
+        // maker：准备 token(A) 余额（授权+存入）
         vm.prank(maker);
         token.approve(address(exchange), giveAmount);
         vm.prank(maker);
         exchange.depositToken(address(token), giveAmount);
 
-        // filler：准备 ETH 余额（存入）
+        // filler：准备 tokenB 余额（授权+存入），数量需包含手续费
+        uint256 feeAmount = (getAmount * feePercentage) / 10000;
         vm.prank(filler);
-        exchange.depositEther{value: getAmount + ((getAmount * feePercentage) / 10000)}();
+        tokenB.approve(address(exchange), getAmount + feeAmount);
+        vm.prank(filler);
+        exchange.depositToken(address(tokenB), getAmount + feeAmount);
 
         // maker 创建订单
         vm.recordLogs();
         vm.prank(maker);
-        exchange.makeOrder(ETHER, getAmount, address(token), giveAmount);
+        exchange.makeOrder(address(tokenB), getAmount, address(token), giveAmount);
         Vm.Log[] memory logs1 = vm.getRecordedLogs();
         bytes32 orderHash = logs1[logs1.length - 1].topics[1];
 
         // 成交订单（由 filler 吃单）
-        uint256 feeAmount = (getAmount * feePercentage) / 10000;
         vm.prank(filler);
         vm.expectEmit(true, true, true, true, address(exchange));
         emit OrderFilled(orderHash, maker, filler, getAmount, block.timestamp);
         exchange.fillOrder(orderHash);
 
         // 校验交易后余额（交易所在账本）
-        // maker 在交易所的 ETH 增加 getAmount
-        assertEq(exchange.balanceOf(ETHER, maker), getAmount);
-        // filler 在交易所的 ETH 应为 0（之前正好存入 getAmount+fee）
-        assertEq(exchange.balanceOf(ETHER, filler), 0);
-        // 单独断言手续费账户收到 fee
-        assertEq(exchange.balanceOf(ETHER, feeAccount), feeAmount);
+        // maker 在交易所的 tokenB 增加 getAmount
+        assertEq(exchange.balanceOf(address(tokenB), maker), getAmount);
+        // filler 在交易所的 tokenB 减少 getAmount + fee（余额应为 0）
+        assertEq(exchange.balanceOf(address(tokenB), filler), 0);
+        // 手续费账户收到 fee（以 tokenB 计）
+        assertEq(exchange.balanceOf(address(tokenB), feeAccount), feeAmount);
 
-        // token 方向：
-        // maker 的 token 减少 giveAmount
+        // token(A) 方向：maker 的 token(A) 减少 giveAmount，filler 增加 giveAmount
         assertEq(exchange.balanceOf(address(token), maker), 0);
-        // filler 的 token 增加 giveAmount
         assertEq(exchange.balanceOf(address(token), filler), giveAmount);
     }
 
     function test_MakeOrder_RevertWhen_InsufficientBalance() public {
-        // maker 未存入 token，直接挂单应失败
+        // maker 未存入 tokenB，直接以 tokenB 作为 give 挂单应失败
+        // 使用不同代币以避免 "Cannot trade same token" 检查先触发
         vm.prank(maker);
         vm.expectRevert(bytes("Insufficient balance for order"));
-        exchange.makeOrder(address(token), 1, address(token), 1);
+        exchange.makeOrder(address(token), 1, address(tokenB), 1);
     }
 }
