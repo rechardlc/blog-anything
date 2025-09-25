@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {Exchange} from "./Exchange.sol";
+import {Exchange} from "./exchange.sol";
 import {RichardToken} from "./richardToken.sol";
 import {Test} from "forge-std/Test.sol";
 
