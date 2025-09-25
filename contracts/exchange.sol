@@ -65,7 +65,7 @@ contract Exchange {
             _tokenGive,
             _tokenGiveAmount,
             block.timestamp,
-            block.prevrandao,
+            block.difficulty,
             block.coinbase,
             block.number,
             msg.sender,
@@ -111,7 +111,7 @@ contract Exchange {
         require(_token != address(0), "Invalid token address");
         require(_amount > 0, "Amount must be greater than 0");
         
-        // 先更新余额，再转账（防止重入攻击）
+        // 先更新余额，再转账（防止重入攻击） CEI模式
         tokens[_token][msg.sender] = tokens[_token][msg.sender] + _amount;
         
         // 执行转账
