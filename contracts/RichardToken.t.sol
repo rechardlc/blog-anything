@@ -3,6 +3,8 @@ pragma solidity ^0.8.0;
 import {RichardToken} from "./RichardToken.sol";
 import {Test} from "forge-std/Test.sol";
 
+import {console} from "forge-std/console.sol";
+
 
 /**
 * 测试 RichardToken 合约的覆盖点（建议）：
@@ -43,6 +45,7 @@ contract RichardTokenTest is Test {
         token = new RichardToken();
     }
     // 测试函数必须test开头，否则不会被测试, 测试函数必须public，否则不会被测试, 测试函数必须view，否则不会被测试
+    // =============== 测试初始变量 ============
     // 测试供应量
     function testInitialSupply() public view{
         uint256 supply = token.getTotalSupply();
@@ -61,12 +64,46 @@ contract RichardTokenTest is Test {
     function testDecimals() public view{
         assertEq(uint256(token.DECIMALS()), uint256(18), "decimals should be 18");
     }
-    // 测试转账
-    // function testTransfer() public {
-    //     uint256 amount = 100 * 10 ** token.DECIMALS();
-    //     token.transfer(address(1), amount);
-    //     assertEq(token.balanceOf(address(1)), amount, "transfer should be successful");
-    // }
+    // 测试初始供应量是否分配给部署者
+    function testInitialSupplyAssignedToDeployer() public view{
+        uint256 supply = token.totalSupply();
+        assertEq(token.balanceOf(address(this)), supply, "initial supply should be owned by deployer");
+    }
+    // =============== 测试转账 ============
+    // 测试转账是否成功
+    function testTransfer() public {
+        // 100个token
+        uint256 amount = 100 * 10 ** token.DECIMALS();
+        // 可以通过console.log();打印变量值, console.log()是一个库函数，需要import {console} from "forge-std/console.sol";
+        console.log("amount", amount , "token.DECIMALS()", token.DECIMALS());
+        // 转账给地址1
+        token.transfer(address(1), amount);
+        // 测试转账是否成功
+        assertEq(token.balanceOf(address(1)), amount, "transfer should be successful");
+    }
+    // 测试转账到零地址是否失败
+    function testTransferToZeroAddressReverts() public {
+        // vm模拟EVM行为：expectRevert 期待一个错误信息，如果错误信息与预期不符，则测试失败
+        vm.expectRevert(bytes("Transfer to zero address"));
+        token.transfer(address(0), 1);
+    }
+    // 测试转账金额为0
+    function testTransferAmountZeroReverts() public {
+        vm.expectRevert(bytes("Transfer amount must be greater than 0"));
+        // 向第一个账户转0个token
+        token.transfer(address(1), 0);
+    }
+    // 测试转账余额不足
+    function testTransferInsufficientBalanceReverts() public {
+        // 创建一个新地址，它没有代币余额
+        address alice = address(0xA11CE);
+        
+        // 使用 vm.prank 模拟 alice 调用转账函数
+        vm.prank(alice);
+        vm.expectRevert(bytes("Insufficient balance"));
+        // alice 尝试转账1个代币，但她余额为0，应该失败
+        token.transfer(address(1), 1);
+    }
 }
 
 
