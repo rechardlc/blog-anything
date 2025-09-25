@@ -65,7 +65,7 @@ contract Exchange {
             _tokenGive,
             _tokenGiveAmount,
             block.timestamp,
-            block.prevrandao,
+            block.difficulty,
             block.coinbase,
             block.number,
             msg.sender,
