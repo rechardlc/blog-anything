@@ -18,7 +18,10 @@
     "format:check": "prettier --check .",
     "pre-commit": "lint-staged",
     "type-check": "tsc --noEmit",
-    "local:blockchain": "npx hardhat node --port 9999"
+    "ht-local:hnp": "npx hardhat node --port 9999",
+    "ht-test:sol": "npx hardhat test solidity",
+    "ht-complie": "npx hardhat complie",
+    "ht-deploy": "npx hardhat deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

@@ -44,12 +44,26 @@ contract RichardToken {
         _;
         locked = false;
     }
-
+    /*
+        checks-effects-interactions原则
+        先检查-再修改-再执行，添加锁=>实现原子化
+    */
     // 转账函数 - 优化 gas 和安全性
     function transfer(address to, uint256 value) public nonReentrant returns (bool success) {
         require(to != address(0), "Transfer to zero address");
         require(value > 0, "Transfer amount must be greater than 0");
         return _transfer(msg.sender, to, value);
+    }
+
+     // 授权函数 - 优化 gas 和安全性
+    function approve(address spender, uint256 value) public returns (bool success) {
+        require(spender != address(0), "Approve to zero address");
+        require(spender != msg.sender, "Approve to self");
+        // msg.sender：发起者地址， spender： 授权方地址 { "发起者": { 授权方: "额度" } }
+        // 这里的msg.sender是发起者？还是部署者？还是拥有者？合约地址？关系是什么？
+        allowance[msg.sender][spender] = value;
+        emit Approval(msg.sender, spender, value);
+        return true;
     }
     
     // 授权转账函数 - 优化 gas 和安全性
@@ -63,15 +77,6 @@ contract RichardToken {
         // 先更新授权额度，再执行转账（CEI 模式）
         allowance[from][msg.sender] = allowance[from][msg.sender] - value;
         return _transfer(from, to, value);
-    }
-    // 授权函数 - 优化 gas 和安全性
-    function approve(address spender, uint256 value) public returns (bool success) {
-        require(spender != address(0), "Approve to zero address");
-        require(spender != msg.sender, "Approve to self");
-        
-        allowance[msg.sender][spender] = value;
-        emit Approval(msg.sender, spender, value);
-        return true;
     }
     
     // 增加授权额度 - ERC20 标准扩展
