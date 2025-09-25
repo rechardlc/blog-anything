@@ -1,19 +1,11 @@
-const hre = require('hardhat');
+import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
+import TokenModule from './token';
+import ExchangeModule from './exchange';
 
-async function main() {
-  const [deployer] = await hre.ehters.getSigners();
-  console.log('Deploying contracts with the account:', deployer.address);
+// 部署模块：部署两份 RichardToken 与一个 Exchange（feeAccount 使用账户0，fee 1%）
+export default buildModule('DexModule', m => {
+  const { token } = m.useModule(TokenModule);
+  const { exchange } = m.useModule(ExchangeModule);
 
-  const MyToken = await hre.ethers.getContractFactory('MyToken');
-  const myToken = await MyToken.deploy();
-
-  await myToken.waitForDeployment();
-  console.log('MyToken deployed to:', await myToken.getAddress());
-}
-
-main()
-  .then(() => process.exit(0))
-  .catch(error => {
-    console.error(error);
-    process.exit(1);
-  });
+  return { token, exchange };
+});

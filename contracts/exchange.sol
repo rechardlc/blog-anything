@@ -37,6 +37,8 @@ contract Exchange {
 
     constructor(address _feeAccount, uint256 _feePercentage) {
         require(_feeAccount != address(0), "Invalid fee account");
+        // 这里为什么是10000？
+        // 10000bp = 100%, 100bp = 1%
         require(_feePercentage <= 10000, "Fee percentage too high"); // 最大 100%
         feeAccount = _feeAccount;
         feePercentage = _feePercentage;

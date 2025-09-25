@@ -1,0 +1,37 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_0-7ec66ba727452b0924e233f13ba1df5b372518ee",
+  "solcVersion": "0.8.0",
+  "solcLongVersion": "0.8.0+commit.c7dfd78e",
+  "userSourceNameMap": {
+    "contracts/richardToken.sol": "project/contracts/richardToken.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "istanbul",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": ["ast"],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/richardToken.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\n/**\r\n * @title RichardToken\r\n * @dev ERC20标准 代币合约实现\r\n * @notice 这是一个优化的 ERC20 代币合约，具有更高的安全性和 gas 效率\r\n */\r\ncontract RichardToken {\r\n    \r\n    // 代币基本信息 - 使用 constant 优化 gas\r\n    string public constant NAME = \"RichardToken\";\r\n    string public constant SYMBOL = \"RTK\";\r\n    uint8 public constant DECIMALS = 18;\r\n    \r\n    // 总供应量 - 使用 immutable 优化 gas\r\n    uint256 public immutable totalSupply;\r\n\r\n    // 余额映射\r\n    mapping(address => uint256) public balanceOf;\r\n    \r\n    // 授权映射\r\n    mapping(address => mapping(address => uint256)) public allowance;\r\n    \r\n    // 重入攻击保护\r\n    bool private locked;\r\n    \r\n    // 事件定义 - 优化 gas\r\n    event Transfer(address indexed from, address indexed to, uint256 value);\r\n    event Approval(address indexed owner, address indexed spender, uint256 value);\r\n    // 构造函数 - 优化 gas 和安全性\r\n    constructor() {\r\n        // 这个是一个科学计数法\r\n        uint256 initialSupply = 10000 * 10 ** DECIMALS;\r\n        totalSupply = initialSupply;\r\n        balanceOf[msg.sender] = initialSupply;\r\n        emit Transfer(address(0), msg.sender, initialSupply);\r\n    }\r\n    \r\n    // 重入攻击保护修饰符\r\n    modifier nonReentrant() {\r\n        require(!locked, \"Reentrant call\");\r\n        locked = true;\r\n        _;\r\n        locked = false;\r\n    }\r\n    /*\r\n        checks-effects-interactions原则\r\n        先检查-再修改-再执行，添加锁=>实现原子化\r\n    */\r\n    // 转账函数 - 优化 gas 和安全性\r\n    function transfer(address to, uint256 value) public nonReentrant returns (bool success) {\r\n        require(to != address(0), \"Transfer to zero address\");\r\n        require(value > 0, \"Transfer amount must be greater than 0\");\r\n        return _transfer(msg.sender, to, value);\r\n    }\r\n\r\n     // 授权函数 - 优化 gas 和安全性\r\n    function approve(address spender, uint256 value) public returns (bool success) {\r\n        require(spender != address(0), \"Approve to zero address\");\r\n        require(spender != msg.sender, \"Approve to self\");\r\n        // msg.sender：发起者地址， spender： 授权方地址 { \"发起者\": { 授权方: \"额度\" } }\r\n        // 这里的msg.sender是发起者？还是部署者？还是拥有者？合约地址？关系是什么？\r\n        allowance[msg.sender][spender] = value;\r\n        emit Approval(msg.sender, spender, value);\r\n        return true;\r\n    }\r\n    \r\n    // 授权转账函数 - 优化 gas 和安全性\r\n    function transferFrom(address from, address to, uint256 value) public nonReentrant returns (bool success) {\r\n        require(from != address(0), \"Transfer from zero address\");\r\n        require(to != address(0), \"Transfer to zero address\");\r\n        require(value > 0, \"Transfer amount must be greater than 0\");\r\n        require(balanceOf[from] >= value, \"Insufficient balance\");\r\n        require(allowance[from][msg.sender] >= value, \"Insufficient allowance\");\r\n        \r\n        // 先更新授权额度，再执行转账（CEI 模式）\r\n        allowance[from][msg.sender] = allowance[from][msg.sender] - value;\r\n        return _transfer(from, to, value);\r\n    }\r\n    \r\n    // 增加授权额度 - ERC20 标准扩展\r\n    function increaseAllowance(address spender, uint256 addedValue) public returns (bool success) {\r\n        require(spender != address(0), \"Approve to zero address\");\r\n        require(spender != msg.sender, \"Approve to self\");\r\n        \r\n        uint256 newAllowance = allowance[msg.sender][spender] + addedValue;\r\n        allowance[msg.sender][spender] = newAllowance;\r\n        emit Approval(msg.sender, spender, newAllowance);\r\n        return true;\r\n    }\r\n    \r\n    // 减少授权额度 - ERC20 标准扩展\r\n    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool success) {\r\n        require(spender != address(0), \"Approve to zero address\");\r\n        require(allowance[msg.sender][spender] >= subtractedValue, \"Decreased allowance below zero\");\r\n        \r\n        uint256 newAllowance = allowance[msg.sender][spender] - subtractedValue;\r\n        allowance[msg.sender][spender] = newAllowance;\r\n        emit Approval(msg.sender, spender, newAllowance);\r\n        return true;\r\n    }\r\n    // 内部转账函数 - 优化 gas 和安全性\r\n    function _transfer(address from, address to, uint256 value) internal returns (bool success) {\r\n        require(balanceOf[from] >= value, \"Insufficient balance\");\r\n        \r\n        balanceOf[from] = balanceOf[from] - value;\r\n        balanceOf[to] = balanceOf[to] + value;\r\n        \r\n        // 触发转账事件\r\n        emit Transfer(from, to, value);\r\n        return true;\r\n    }\r\n    \r\n    // 查询余额 - 优化 gas\r\n    function getBalance(address account) public view returns (uint256) {\r\n        return balanceOf[account];\r\n    }\r\n    \r\n    // 查询授权额度 - 优化 gas\r\n    function getAllowance(address owner, address spender) public view returns (uint256) {\r\n        return allowance[owner][spender];\r\n    }\r\n    \r\n    // 查询总供应量 - 优化 gas\r\n    function getTotalSupply() public view returns (uint256) {\r\n        return totalSupply;\r\n    }\r\n}\r\n\r\n// web3开发，一定要考虑边界问题！！！"
+      }
+    }
+  }
+}
