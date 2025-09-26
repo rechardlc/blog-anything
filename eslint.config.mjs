@@ -21,6 +21,7 @@ const eslintConfig = [
       'cache/**',
       'next-env.d.ts',
       'src/generated/**',
+      'src/artifacts/**', // 忽略 Hardhat 自动生成的 artifacts 文件
       '.history/**',
       'scripts/**',
       'prisma/**',
