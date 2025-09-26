@@ -23,7 +23,7 @@ const eslintConfig = [
       'src/generated/**',
       'src/artifacts/**', // 忽略 Hardhat 自动生成的 artifacts 文件
       '.history/**',
-      'scripts/**',
+      'scripts/**', // 忽略 scripts 目录中的所有文件
       'prisma/**',
       '**/*.js', // 忽略所有 JS 文件，只检查 TS/TSX
     ],
