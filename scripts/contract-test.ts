@@ -87,7 +87,10 @@ async function contractInfo() {
       await queryExchangeInfo(deployedAddresses['ExchangeModule#Exchange']);
     }
   } catch (error) {
-    console.error('查询失败:', error.message);
+    console.error(
+      '查询失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 
@@ -136,7 +139,10 @@ async function contractBalance(accountAddress) {
       console.log('交易所代币余额:', exchangeBalance.toString());
     }
   } catch (error) {
-    console.error('查询失败:', error.message);
+    console.error(
+      '查询失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 
@@ -201,7 +207,10 @@ async function contractTransfer(toAddress, amount, fromAddress) {
     console.log('  发送方:', fromBalanceAfter.toString());
     console.log('  接收方:', toBalanceAfter.toString());
   } catch (error) {
-    console.error('转账失败:', error.message);
+    console.error(
+      '转账失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 
@@ -257,7 +266,10 @@ async function contractApprove(spenderAddress, amount, ownerAddress) {
     ]);
     console.log('当前授权额度:', allowance.toString());
   } catch (error) {
-    console.error('授权失败:', error.message);
+    console.error(
+      '授权失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 
@@ -335,7 +347,10 @@ async function contractDeposit(amount, accountAddress) {
     ]);
     console.log('存款后交易所余额:', balanceAfter.toString());
   } catch (error) {
-    console.error('存款失败:', error.message);
+    console.error(
+      '存款失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 
@@ -415,7 +430,10 @@ async function contractTest() {
 
     console.log('\n=== 测试套件完成 ===');
   } catch (error) {
-    console.error('测试失败:', error.message);
+    console.error(
+      '测试失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 

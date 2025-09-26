@@ -42,7 +42,10 @@ async function main() {
       '3. 运行测试: npx hardhat run scripts/contract-test.ts test --network localhost'
     );
   } catch (error) {
-    console.error('查询失败:', error.message);
+    console.error(
+      '查询失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 

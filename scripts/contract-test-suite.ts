@@ -81,7 +81,10 @@ async function main() {
     console.log('📋 测试脚本已准备就绪');
     console.log('🚀 可以开始交互测试');
   } catch (error) {
-    console.error('测试失败:', error.message);
+    console.error(
+      '测试失败:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 
