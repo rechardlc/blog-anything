@@ -1,6 +1,6 @@
 import hre from 'hardhat';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -95,7 +95,7 @@ async function contractInfo() {
 }
 
 // 查询账户余额
-async function contractBalance(accountAddress) {
+async function contractBalance(accountAddress: string) {
   console.log('=== 账户余额查询 ===');
 
   try {
@@ -147,7 +147,11 @@ async function contractBalance(accountAddress) {
 }
 
 // 代币转账
-async function contractTransfer(toAddress, amount, fromAddress) {
+async function contractTransfer(
+  toAddress: string,
+  amount: string,
+  fromAddress: string
+) {
   console.log('=== 代币转账 ===');
 
   try {
@@ -163,7 +167,7 @@ async function contractTransfer(toAddress, amount, fromAddress) {
       }
     }
 
-    const transferAmount = BigInt(amount) * 10n ** 18n; // 转换为 wei
+    const transferAmount = BigInt(amount) * BigInt(10 ** 18); // 转换为 wei
 
     console.log('发送方:', fromAddress);
     console.log('接收方:', toAddress);
@@ -215,7 +219,11 @@ async function contractTransfer(toAddress, amount, fromAddress) {
 }
 
 // 代币授权
-async function contractApprove(spenderAddress, amount, ownerAddress) {
+async function contractApprove(
+  spenderAddress: string,
+  amount: string,
+  ownerAddress: string
+) {
   console.log('=== 代币授权 ===');
 
   try {
@@ -231,7 +239,7 @@ async function contractApprove(spenderAddress, amount, ownerAddress) {
       }
     }
 
-    const approveAmount = BigInt(amount) * 10n ** 18n; // 转换为 wei
+    const approveAmount = BigInt(amount) * BigInt(10 ** 18); // 转换为 wei
 
     console.log('授权方:', ownerAddress);
     console.log('被授权方:', spenderAddress);
@@ -274,7 +282,7 @@ async function contractApprove(spenderAddress, amount, ownerAddress) {
 }
 
 // 交易所存款
-async function contractDeposit(amount, accountAddress) {
+async function contractDeposit(amount: string, accountAddress: string) {
   console.log('=== 交易所存款 ===');
 
   try {
@@ -290,7 +298,7 @@ async function contractDeposit(amount, accountAddress) {
       }
     }
 
-    const depositAmount = BigInt(amount) * 10n ** 18n; // 转换为 wei
+    const depositAmount = BigInt(amount) * BigInt(10 ** 18); // 转换为 wei
 
     console.log('存款账户:', accountAddress);
     console.log('存款数量:', amount, '代币');
@@ -380,7 +388,7 @@ async function contractTest() {
 
     // 测试 2: 代币转账
     console.log('\n--- 测试 2: 代币转账 ---');
-    const transferAmount = 1000n * 10n ** 18n;
+    const transferAmount = BigInt(1000) * BigInt(10 ** 18);
     const tokenContract = await hre.viem.getContractAt(
       'RichardToken',
       deployedAddresses['TokenModule#Token']
@@ -396,7 +404,7 @@ async function contractTest() {
 
     // 测试 3: 代币授权
     console.log('\n--- 测试 3: 代币授权 ---');
-    const approveAmount = 500n * 10n ** 18n;
+    const approveAmount = BigInt(500) * BigInt(10 ** 18);
 
     const approveTx = await tokenContract.write.approve([
       account2,
@@ -407,7 +415,7 @@ async function contractTest() {
 
     // 测试 4: 交易所存款
     console.log('\n--- 测试 4: 交易所存款 ---');
-    const depositAmount = 200n * 10n ** 18n;
+    const depositAmount = BigInt(200) * BigInt(10 ** 18);
     const exchangeContract = await hre.viem.getContractAt(
       'Exchange',
       deployedAddresses['ExchangeModule#Exchange']
@@ -452,7 +460,7 @@ async function loadDeployedAddresses() {
 }
 
 // 辅助函数：查询代币信息
-async function queryTokenInfo(tokenAddress) {
+async function queryTokenInfo(tokenAddress: string) {
   const tokenContract = await hre.viem.getContractAt(
     'RichardToken',
     tokenAddress
@@ -470,7 +478,7 @@ async function queryTokenInfo(tokenAddress) {
 }
 
 // 辅助函数：查询交易所信息
-async function queryExchangeInfo(exchangeAddress) {
+async function queryExchangeInfo(exchangeAddress: string) {
   const exchangeContract = await hre.viem.getContractAt(
     'Exchange',
     exchangeAddress

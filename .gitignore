@@ -306,3 +306,5 @@ analyze/
 /scripts/secrets.sh
 
 /src/generated/prisma
+
+/ignition/deployments
