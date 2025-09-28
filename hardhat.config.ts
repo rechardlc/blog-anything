@@ -8,6 +8,9 @@ import './tasks/test-simple';
 
 const config: HardhatUserConfig = {
   plugins: [hardhatToolboxViemPlugin],
+  paths: {
+    artifacts: './src/artifacts', // 打包目录修改为react项目目录，方便引入
+  },
   solidity: {
     profiles: {
       default: {

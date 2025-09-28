@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
 
+  // TypeScript 配置 - 排除 scripts 目录
+  typescript: {
+    ignoreBuildErrors: false,
+    tsconfigPath: './tsconfig.json',
+  },
+
   // 环境变量配置
   env: {
     // 自定义环境变量（如果需要）
