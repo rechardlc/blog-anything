@@ -4,6 +4,7 @@ import type { HardhatUserConfig } from 'hardhat/config';
 
 import hardhatToolboxViemPlugin from '@nomicfoundation/hardhat-toolbox-viem';
 import { configVariable } from 'hardhat/config';
+import './tasks/test-simple';
 
 const config: HardhatUserConfig = {
   plugins: [hardhatToolboxViemPlugin],
