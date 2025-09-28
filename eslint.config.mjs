@@ -23,6 +23,7 @@ const eslintConfig = [
       'src/generated/**',
       '.history/**',
       'scripts/**',
+      'tasks/**',
       'prisma/**',
       '**/*.js', // 忽略所有 JS 文件，只检查 TS/TSX
     ],
