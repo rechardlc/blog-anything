@@ -23,3 +23,6 @@ test/
 # 忽略配置文件
 next-env.d.ts
 *.js
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
