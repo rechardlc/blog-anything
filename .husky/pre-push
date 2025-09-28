@@ -1,30 +1,30 @@
-# #!/bin/sh
-# . "$(dirname "$0")/_/husky.sh"
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
-# echo "🔍 运行推送前检查..."
+echo "🔍 运行推送前检查..."
 
-# # 检查代码格式
-# echo "📝 检查代码格式..."
-# pnpm run format:check
-# if [ $? -ne 0 ]; then
-#   echo "❌ 代码格式检查失败！请运行 'pnpm run format' 修复格式问题。"
-#   exit 1
-# fi
+# 检查代码格式
+echo "📝 检查代码格式..."
+pnpm run format:check
+if [ $? -ne 0 ]; then
+  echo "❌ 代码格式检查失败！请运行 'pnpm run format' 修复格式问题。"
+  exit 1
+fi
 
-# # 运行代码检查
-# echo "🔧 运行 ESLint 检查..."
-# pnpm run lint
-# if [ $? -ne 0 ]; then
-#   echo "❌ ESLint 检查失败！请修复代码问题后再次提交。"
-#   exit 1
-# fi
+# 运行代码检查
+echo "🔧 运行 ESLint 检查..."
+pnpm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint 检查失败！请修复代码问题后再次提交。"
+  exit 1
+fi
 
-# # 运行构建测试
-# echo "🏗️ 运行构建测试..."
-# pnpm run build
-# if [ $? -ne 0 ]; then
-#   echo "❌ 构建失败！请修复构建错误后再次推送。"
-#   exit 1
-# fi
+# 运行构建测试
+echo "🏗️ 运行构建测试..."
+pnpm run build
+if [ $? -ne 0 ]; then
+  echo "❌ 构建失败！请修复构建错误后再次推送。"
+  exit 1
+fi
 
-# echo "✅ 所有检查通过，可以安全推送！"
+echo "✅ 所有检查通过，可以安全推送！"
