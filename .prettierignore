@@ -1,14 +1,25 @@
-node_modules
-.next
-out
-build
-*.log
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.*
-pnpm-lock.yaml
-package-lock.json
-yarn.lock
+# 忽略构建和缓存目录
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# 忽略生成的文件
+artifacts/
+cache/
+src/generated/
+src/artifacts/
+
+# 忽略开发工具目录
+.history/
+scripts/
+tasks/
+prisma/
+contracts/
+ignition/
+test/
+
+# 忽略配置文件
+next-env.d.ts
+*.js

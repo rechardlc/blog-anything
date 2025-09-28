@@ -25,7 +25,10 @@ const eslintConfig = [
       '.history/**',
       'scripts/**', // 忽略 scripts 目录中的所有文件
       'tasks/**', // 忽略 tasks 目录
-      'prisma/**',
+      'prisma/**', // 忽略 Prisma 相关文件
+      'contracts/**', // 忽略 Hardhat 合约文件
+      'ignition/**', // 忽略 Hardhat Ignition 部署文件
+      'test/**', // 忽略测试目录
       '**/*.js', // 忽略所有 JS 文件，只检查 TS/TSX
     ],
   },
