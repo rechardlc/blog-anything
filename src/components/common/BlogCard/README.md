@@ -19,7 +19,7 @@ import { FullCard } from '@/components/common';
 function Example() {
   return (
     <FullCard
-      variant='elevated'
+      variant="elevated"
       header={{
         title: '卡片标题',
         description: '卡片描述信息',
@@ -85,14 +85,10 @@ function Example() {
 ### 1. 基础用法
 
 ```tsx
-import {
-  CommonCard,
-  CommonCardHeader,
-  CommonCardContent,
-} from '@/components/common';
+import { CommonCard, CommonCardHeader, CommonCardContent } from '@/components/common';
 
-<CommonCard variant='elevated'>
-  <CommonCardHeader title='基础卡片' />
+<CommonCard variant="elevated">
+  <CommonCardHeader title="基础卡片" />
   <CommonCardContent>
     <p>这是卡片内容</p>
   </CommonCardContent>
@@ -118,7 +114,7 @@ import { Star } from 'lucide-react';
 ### 3. 可点击卡片
 
 ```tsx
-<CommonCard variant='outlined' clickable onClick={() => console.log('点击!')}>
+<CommonCard variant="outlined" clickable onClick={() => console.log('点击!')}>
   <CommonCardContent>
     <p>点击我试试</p>
   </CommonCardContent>
@@ -150,7 +146,7 @@ import { Star } from 'lucide-react';
 组件使用 Tailwind CSS 类名，支持通过 `className` 属性进行样式覆盖：
 
 ```tsx
-<CommonCard className='custom-shadow hover:border-blue-500' variant='outlined'>
+<CommonCard className="custom-shadow hover:border-blue-500" variant="outlined">
   {/* 内容 */}
 </CommonCard>
 ```

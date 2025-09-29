@@ -53,10 +53,7 @@ export interface FilterParams {
 }
 
 // 查询参数
-export interface QueryParams
-  extends PaginationParams,
-    SortParams,
-    FilterParams {}
+export interface QueryParams extends PaginationParams, SortParams, FilterParams {}
 
 // API 请求配置
 export interface ApiRequestConfig {
@@ -127,13 +124,11 @@ export enum ApiErrorCode {
 }
 
 // 请求拦截器类型
-export type RequestInterceptor = (
-  config: ApiRequestConfig
-) => ApiRequestConfig | Promise<ApiRequestConfig>;
+export type RequestInterceptor = (config: ApiRequestConfig) => ApiRequestConfig | Promise<ApiRequestConfig>;
 
 // 响应拦截器类型
 export type ResponseInterceptor<T = unknown> = (
-  response: ApiResponse<T>
+  response: ApiResponse<T>,
 ) => ApiResponse<T> | Promise<ApiResponse<T>>;
 
 // API 客户端配置

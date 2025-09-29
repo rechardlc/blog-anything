@@ -21,8 +21,8 @@ const getPosition = () => {
 
 const Navs = (props: Props) => {
   return (
-    <div className='flex items-center space-x-4 md:space-x-4'>
-      {props.navsList.map(nav => {
+    <div className="flex items-center space-x-4 md:space-x-4">
+      {props.navsList.map((nav) => {
         return (
           <Link
             key={nav.id}
@@ -39,7 +39,7 @@ const Navs = (props: Props) => {
               `before:top-[50%] before:left-[50%] before:origin-top-left`,
               'before:animate-spin-constant-slow before:hidden',
               "after:content-[''] after:absolute after:inset-[2px] after:bg-zinc-50",
-              'after:rounded-[inherit] after:-z-[1] after:dark:bg-zinc-800'
+              'after:rounded-[inherit] after:-z-[1] after:dark:bg-zinc-800',
             )}
           >
             {nav.name}

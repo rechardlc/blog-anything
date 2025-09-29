@@ -7,13 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import {
   Form,
@@ -57,7 +51,7 @@ const formSchema = z
       .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, '密码必须包含特殊符号'),
     confirmPassword: z.string(),
   })
-  .refine(data => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: '两次输入的密码不一致',
     path: ['confirmPassword'],
   });
@@ -151,11 +145,11 @@ const Register = () => {
   const getThemeIcon = () => {
     switch (theme) {
       case 'light':
-        return <Sun className='w-4 h-4' />;
+        return <Sun className="w-4 h-4" />;
       case 'dark':
-        return <Moon className='w-4 h-4' />;
+        return <Moon className="w-4 h-4" />;
       default:
-        return <Monitor className='w-4 h-4' />;
+        return <Monitor className="w-4 h-4" />;
     }
   };
 
@@ -181,60 +175,52 @@ const Register = () => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 relative'>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 relative">
       {/* 主题切换按钮 */}
       <Button
-        variant='outline'
-        size='icon'
+        variant="outline"
+        size="icon"
         onClick={toggleTheme}
-        className='absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105'
+        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
         title={`当前主题: ${theme === 'light' ? '浅色' : theme === 'dark' ? '深色' : '跟随系统'}`}
       >
         {getThemeIcon()}
       </Button>
 
-      <Card className='w-full max-w-md shadow-xl border-0 bg-white/80 backdrop-blur-sm dark:bg-gray-800/80'>
-        <CardHeader className='text-center space-y-2'>
-          <div className='mx-auto w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4'>
-            <User className='w-6 h-6 text-primary-foreground' />
+      <Card className="w-full max-w-md shadow-xl border-0 bg-white/80 backdrop-blur-sm dark:bg-gray-800/80">
+        <CardHeader className="text-center space-y-2">
+          <div className="mx-auto w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
+            <User className="w-6 h-6 text-primary-foreground" />
           </div>
-          <CardTitle className='text-2xl font-bold'>Richard 博客注册</CardTitle>
+          <CardTitle className="text-2xl font-bold">Richard 博客注册</CardTitle>
           <CardDescription>创建您的管理账户</CardDescription>
         </CardHeader>
 
-        <CardContent className='space-y-6'>
+        <CardContent className="space-y-6">
           {/* 错误提示 */}
           {form.formState.errors.root && (
-            <Alert variant='destructive'>
-              <AlertCircle className='h-4 w-4' />
-              <AlertDescription>
-                {form.formState.errors.root.message}
-              </AlertDescription>
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{form.formState.errors.root.message}</AlertDescription>
             </Alert>
           )}
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               {/* 用户名 */}
               <FormField
                 control={form.control}
-                name='username'
+                name="username"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>用户名</FormLabel>
                     <FormControl>
-                      <div className='relative'>
-                        <User className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-                        <Input
-                          placeholder='请输入用户名'
-                          className='pl-10'
-                          {...field}
-                        />
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input placeholder="请输入用户名" className="pl-10" {...field} />
                       </div>
                     </FormControl>
-                    <FormDescription>
-                      用户名只能包含字母、数字和下划线
-                    </FormDescription>
+                    <FormDescription>用户名只能包含字母、数字和下划线</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -243,19 +229,14 @@ const Register = () => {
               {/* 邮箱 */}
               <FormField
                 control={form.control}
-                name='email'
+                name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>邮箱地址</FormLabel>
                     <FormControl>
-                      <div className='relative'>
-                        <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-                        <Input
-                          type='email'
-                          placeholder='请输入邮箱地址'
-                          className='pl-10'
-                          {...field}
-                        />
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input type="email" placeholder="请输入邮箱地址" className="pl-10" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -266,40 +247,34 @@ const Register = () => {
               {/* 密码 */}
               <FormField
                 control={form.control}
-                name='password'
+                name="password"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>密码</FormLabel>
                     <FormControl>
-                      <div className='relative'>
-                        <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
                           type={showPassword ? 'text' : 'password'}
-                          placeholder='请输入密码'
-                          className='pl-10 pr-10'
+                          placeholder="请输入密码"
+                          className="pl-10 pr-10"
                           {...field}
                         />
                         <button
-                          type='button'
+                          type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                         >
-                          {showPassword ? (
-                            <EyeOff className='w-4 h-4' />
-                          ) : (
-                            <Eye className='w-4 h-4' />
-                          )}
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                     </FormControl>
 
                     {/* 密码强度指示器 */}
                     {password.length > 0 && (
-                      <div className='space-y-2'>
-                        <div className='flex items-center justify-between text-xs'>
-                          <span className='text-muted-foreground'>
-                            密码强度:
-                          </span>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">密码强度:</span>
                           <span
                             className={`font-medium ${
                               passwordStrength < 50
@@ -312,28 +287,23 @@ const Register = () => {
                             {getStrengthText(passwordStrength)}
                           </span>
                         </div>
-                        <Progress value={passwordStrength} className='h-2' />
+                        <Progress value={passwordStrength} className="h-2" />
                       </div>
                     )}
 
                     {/* 密码要求检查列表 */}
                     {password.length > 0 && (
-                      <div className='mt-2 space-y-1'>
+                      <div className="mt-2 space-y-1">
                         {passwordRequirements.map((requirement, index) => (
-                          <div
-                            key={index}
-                            className='flex items-center text-xs'
-                          >
+                          <div key={index} className="flex items-center text-xs">
                             {requirement.valid ? (
-                              <CheckCircle className='w-3 h-3 mr-2 text-green-500' />
+                              <CheckCircle className="w-3 h-3 mr-2 text-green-500" />
                             ) : (
-                              <XCircle className='w-3 h-3 mr-2 text-gray-400' />
+                              <XCircle className="w-3 h-3 mr-2 text-gray-400" />
                             )}
                             <span
                               className={
-                                requirement.valid
-                                  ? 'text-green-600 dark:text-green-400'
-                                  : 'text-gray-500'
+                                requirement.valid ? 'text-green-600 dark:text-green-400' : 'text-gray-500'
                               }
                             >
                               {requirement.text}
@@ -350,31 +320,25 @@ const Register = () => {
               {/* 确认密码 */}
               <FormField
                 control={form.control}
-                name='confirmPassword'
+                name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>确认密码</FormLabel>
                     <FormControl>
-                      <div className='relative'>
-                        <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
                           type={showConfirmPassword ? 'text' : 'password'}
-                          placeholder='请再次输入密码'
-                          className='pl-10 pr-10'
+                          placeholder="请再次输入密码"
+                          className="pl-10 pr-10"
                           {...field}
                         />
                         <button
-                          type='button'
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                          className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                         >
-                          {showConfirmPassword ? (
-                            <EyeOff className='w-4 h-4' />
-                          ) : (
-                            <Eye className='w-4 h-4' />
-                          )}
+                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                     </FormControl>
@@ -384,31 +348,29 @@ const Register = () => {
               />
 
               <Button
-                type='submit'
+                type="submit"
                 disabled={isSubmitting || !form.formState.isValid}
-                className='w-full transition-all duration-200 transform hover:scale-[1.02]'
+                className="w-full transition-all duration-200 transform hover:scale-[1.02]"
               >
                 {isSubmitting ? '注册中...' : '注册账户'}
               </Button>
             </form>
           </Form>
 
-          <div className='relative'>
-            <div className='absolute inset-0 flex items-center'>
-              <Separator className='w-full' />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="w-full" />
             </div>
-            <div className='relative flex justify-center text-xs uppercase'>
-              <span className='bg-white dark:bg-gray-800 px-2 text-muted-foreground'>
-                已有账户？
-              </span>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white dark:bg-gray-800 px-2 text-muted-foreground">已有账户？</span>
             </div>
           </div>
 
-          <div className='text-center'>
+          <div className="text-center">
             <Button
-              variant='outline'
+              variant="outline"
               onClick={() => (window.location.href = '/login')}
-              className='w-full'
+              className="w-full"
               disabled={isSubmitting}
             >
               返回登录

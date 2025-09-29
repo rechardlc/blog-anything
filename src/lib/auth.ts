@@ -79,8 +79,7 @@ export const authOpts: NextAuthOptions = {
       // 如果是 GitHub 登录
       if (account?.provider === 'github' && profile) {
         try {
-          await loginWithGithub({ ...user, ...account, ...profile } as Account &
-            GithubProfile);
+          await loginWithGithub({ ...user, ...account, ...profile } as Account & GithubProfile);
 
           // 查找或创建用户
           // const existingUser = await prisma.user.findUnique({

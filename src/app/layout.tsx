@@ -42,9 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: config.app.name,
     description: `${config.app.name} - 基于 Next.js 的现代化博客平台`,
-    creator: config.social.twitterUrl
-      ? `@${config.social.twitterUrl.split('/').pop()}`
-      : undefined,
+    creator: config.social.twitterUrl ? `@${config.social.twitterUrl.split('/').pop()}` : undefined,
   },
   robots: {
     index: true,
@@ -66,10 +64,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={config.locale.defaultLocale} suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>
       </body>

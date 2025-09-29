@@ -5,13 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -106,32 +100,32 @@ const posts = [
 function getStatusBadge(status: string) {
   switch (status) {
     case 'published':
-      return <Badge className='status-badge success'>已发布</Badge>;
+      return <Badge className="status-badge success">已发布</Badge>;
     case 'draft':
-      return <Badge className='status-badge warning'>草稿</Badge>;
+      return <Badge className="status-badge warning">草稿</Badge>;
     case 'review':
-      return <Badge className='status-badge info'>待审核</Badge>;
+      return <Badge className="status-badge info">待审核</Badge>;
     case 'scheduled':
-      return <Badge className='status-badge'>定时发布</Badge>;
+      return <Badge className="status-badge">定时发布</Badge>;
     default:
-      return <Badge className='status-badge'>未知</Badge>;
+      return <Badge className="status-badge">未知</Badge>;
   }
 }
 
 export default function PostsManagementPage() {
   return (
     <DashboardLayout>
-      <div className='space-y-6'>
+      <div className="space-y-6">
         {/* 页面标题和操作 */}
-        <div className='page-header'>
-          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+        <div className="page-header">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className='page-title'>文章管理</h1>
-              <p className='page-description'>管理您的所有博客文章</p>
+              <h1 className="page-title">文章管理</h1>
+              <p className="page-description">管理您的所有博客文章</p>
             </div>
-            <Button asChild className='sm:w-auto w-full'>
-              <Link href='/admin/posts/new'>
-                <Plus className='w-4 h-4 mr-2' />
+            <Button asChild className="sm:w-auto w-full">
+              <Link href="/admin/posts/new">
+                <Plus className="w-4 h-4 mr-2" />
                 新建文章
               </Link>
             </Button>
@@ -139,43 +133,40 @@ export default function PostsManagementPage() {
         </div>
 
         {/* 搜索和筛选 */}
-        <Card className='snow-card'>
-          <CardContent className='p-6'>
-            <div className='flex flex-col sm:flex-row gap-4'>
-              <div className='relative flex-1'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-                <Input
-                  placeholder='搜索文章标题、内容或作者...'
-                  className='pl-10'
-                />
+        <Card className="snow-card">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input placeholder="搜索文章标题、内容或作者..." className="pl-10" />
               </div>
-              <div className='flex gap-2'>
-                <Select defaultValue='all'>
-                  <SelectTrigger className='w-[140px]'>
-                    <SelectValue placeholder='状态筛选' />
+              <div className="flex gap-2">
+                <Select defaultValue="all">
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="状态筛选" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='all'>所有状态</SelectItem>
-                    <SelectItem value='published'>已发布</SelectItem>
-                    <SelectItem value='draft'>草稿</SelectItem>
-                    <SelectItem value='review'>待审核</SelectItem>
-                    <SelectItem value='scheduled'>定时发布</SelectItem>
+                    <SelectItem value="all">所有状态</SelectItem>
+                    <SelectItem value="published">已发布</SelectItem>
+                    <SelectItem value="draft">草稿</SelectItem>
+                    <SelectItem value="review">待审核</SelectItem>
+                    <SelectItem value="scheduled">定时发布</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select defaultValue='all'>
-                  <SelectTrigger className='w-[120px]'>
-                    <SelectValue placeholder='分类' />
+                <Select defaultValue="all">
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="分类" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='all'>所有分类</SelectItem>
-                    <SelectItem value='tech'>技术</SelectItem>
-                    <SelectItem value='frontend'>前端</SelectItem>
-                    <SelectItem value='programming'>编程</SelectItem>
-                    <SelectItem value='tools'>工具</SelectItem>
+                    <SelectItem value="all">所有分类</SelectItem>
+                    <SelectItem value="tech">技术</SelectItem>
+                    <SelectItem value="frontend">前端</SelectItem>
+                    <SelectItem value="programming">编程</SelectItem>
+                    <SelectItem value="tools">工具</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant='outline' size='icon'>
-                  <Filter className='w-4 h-4' />
+                <Button variant="outline" size="icon">
+                  <Filter className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -183,107 +174,97 @@ export default function PostsManagementPage() {
         </Card>
 
         {/* 文章列表 */}
-        <Card className='snow-card'>
+        <Card className="snow-card">
           <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <FileText className='w-5 h-5' />
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" />
               文章列表
-              <Badge variant='secondary' className='ml-auto'>
+              <Badge variant="secondary" className="ml-auto">
                 {posts.length} 篇文章
               </Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className='p-0'>
-            <div className='overflow-x-auto'>
-              <table className='snow-table'>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="snow-table">
                 <thead>
                   <tr>
-                    <th className='text-left'>文章信息</th>
-                    <th className='text-left'>状态</th>
-                    <th className='text-left'>作者</th>
-                    <th className='text-left'>数据</th>
-                    <th className='text-left'>发布时间</th>
-                    <th className='text-center'>操作</th>
+                    <th className="text-left">文章信息</th>
+                    <th className="text-left">状态</th>
+                    <th className="text-left">作者</th>
+                    <th className="text-left">数据</th>
+                    <th className="text-left">发布时间</th>
+                    <th className="text-center">操作</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {posts.map(post => (
+                  {posts.map((post) => (
                     <tr key={post.id}>
                       <td>
-                        <div className='flex items-start space-x-3'>
-                          <div className='flex-1 min-w-0'>
-                            <div className='flex items-center gap-2'>
-                              <h3 className='font-medium text-sm line-clamp-1'>
-                                {post.title}
-                              </h3>
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-medium text-sm line-clamp-1">{post.title}</h3>
                               {post.featured && (
-                                <Badge variant='secondary' className='text-xs'>
+                                <Badge variant="secondary" className="text-xs">
                                   推荐
                                 </Badge>
                               )}
                             </div>
-                            <p className='text-xs text-muted-foreground mt-1 line-clamp-2'>
-                              {post.excerpt}
-                            </p>
-                            <div className='flex items-center mt-2 text-xs text-muted-foreground'>
-                              <span className='px-2 py-1 bg-muted rounded text-xs'>
-                                {post.category}
-                              </span>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{post.excerpt}</p>
+                            <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                              <span className="px-2 py-1 bg-muted rounded text-xs">{post.category}</span>
                             </div>
                           </div>
                         </div>
                       </td>
                       <td>{getStatusBadge(post.status)}</td>
                       <td>
-                        <div className='flex items-center space-x-2'>
-                          <User className='w-4 h-4 text-muted-foreground' />
-                          <span className='text-sm'>{post.author}</span>
+                        <div className="flex items-center space-x-2">
+                          <User className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm">{post.author}</span>
                         </div>
                       </td>
                       <td>
-                        <div className='space-y-1 text-xs text-muted-foreground'>
-                          <div className='flex items-center'>
-                            <Eye className='w-3 h-3 mr-1' />
+                        <div className="space-y-1 text-xs text-muted-foreground">
+                          <div className="flex items-center">
+                            <Eye className="w-3 h-3 mr-1" />
                             {post.views.toLocaleString()}
                           </div>
-                          <div className='flex items-center'>
-                            <MessageSquare className='w-3 h-3 mr-1' />
+                          <div className="flex items-center">
+                            <MessageSquare className="w-3 h-3 mr-1" />
                             {post.comments}
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div className='flex items-center text-sm text-muted-foreground'>
-                          <Calendar className='w-4 h-4 mr-1' />
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Calendar className="w-4 h-4 mr-1" />
                           {post.publishDate}
                         </div>
                       </td>
                       <td>
-                        <div className='flex justify-center'>
+                        <div className="flex justify-center">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button
-                                variant='ghost'
-                                size='icon'
-                                className='h-8 w-8'
-                              >
-                                <MoreHorizontal className='w-4 h-4' />
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreHorizontal className="w-4 h-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
+                            <DropdownMenuContent align="end">
                               <DropdownMenuLabel>操作</DropdownMenuLabel>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem>
-                                <Eye className='w-4 h-4 mr-2' />
+                                <Eye className="w-4 h-4 mr-2" />
                                 预览
                               </DropdownMenuItem>
                               <DropdownMenuItem>
-                                <Edit className='w-4 h-4 mr-2' />
+                                <Edit className="w-4 h-4 mr-2" />
                                 编辑
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className='text-red-600'>
-                                <Trash2 className='w-4 h-4 mr-2' />
+                              <DropdownMenuItem className="text-red-600">
+                                <Trash2 className="w-4 h-4 mr-2" />
                                 删除
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -299,28 +280,24 @@ export default function PostsManagementPage() {
         </Card>
 
         {/* 分页 */}
-        <div className='flex items-center justify-between'>
-          <p className='text-sm text-muted-foreground'>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
             显示 1-{posts.length} 条，共 {posts.length} 条记录
           </p>
-          <div className='flex items-center space-x-2'>
-            <Button variant='outline' size='sm' disabled>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" size="sm" disabled>
               上一页
             </Button>
-            <Button
-              variant='outline'
-              size='sm'
-              className='bg-primary text-primary-foreground'
-            >
+            <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">
               1
             </Button>
-            <Button variant='outline' size='sm'>
+            <Button variant="outline" size="sm">
               2
             </Button>
-            <Button variant='outline' size='sm'>
+            <Button variant="outline" size="sm">
               3
             </Button>
-            <Button variant='outline' size='sm'>
+            <Button variant="outline" size="sm">
               下一页
             </Button>
           </div>

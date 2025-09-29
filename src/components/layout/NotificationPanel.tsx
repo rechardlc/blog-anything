@@ -5,14 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Bell,
-  X,
-  MessageSquare,
-  User,
-  Settings,
-  AlertCircle,
-} from 'lucide-react';
+import { Bell, X, MessageSquare, User, Settings, AlertCircle } from 'lucide-react';
 
 interface Notification {
   id: string;
@@ -100,15 +93,15 @@ const contacts = [
 function getNotificationIcon(type: string) {
   switch (type) {
     case 'bug':
-      return <AlertCircle className='w-4 h-4' />;
+      return <AlertCircle className="w-4 h-4" />;
     case 'user':
-      return <User className='w-4 h-4' />;
+      return <User className="w-4 h-4" />;
     case 'comment':
-      return <MessageSquare className='w-4 h-4' />;
+      return <MessageSquare className="w-4 h-4" />;
     case 'system':
-      return <Settings className='w-4 h-4' />;
+      return <Settings className="w-4 h-4" />;
     default:
-      return <Bell className='w-4 h-4' />;
+      return <Bell className="w-4 h-4" />;
   }
 }
 
@@ -129,33 +122,29 @@ export default function NotificationPanel() {
   const [notifications, setNotifications] = useState(mockNotifications);
 
   const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(notif => (notif.id === id ? { ...notif, read: true } : notif))
-    );
+    setNotifications((prev) => prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif)));
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className='w-80 h-full border-l border-border/60 bg-card/50 backdrop-blur-sm'>
+    <div className="w-80 h-full border-l border-border/60 bg-card/50 backdrop-blur-sm">
       {/* Header */}
-      <div className='p-6 border-b border-border/60'>
-        <div className='flex items-center justify-between mb-4'>
-          <h2 className='text-lg font-bold'>Notifications</h2>
-          <Button variant='ghost' size='icon' className='h-8 w-8'>
-            <X className='w-4 h-4' />
+      <div className="p-6 border-b border-border/60">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold">Notifications</h2>
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <X className="w-4 h-4" />
           </Button>
         </div>
 
-        {unreadCount > 0 && (
-          <Badge className='bg-red-500 text-white'>{unreadCount} new</Badge>
-        )}
+        {unreadCount > 0 && <Badge className="bg-red-500 text-white">{unreadCount} new</Badge>}
       </div>
 
-      <ScrollArea className='h-full'>
+      <ScrollArea className="h-full">
         {/* Notifications */}
-        <div className='p-4 space-y-3'>
-          {notifications.map(notification => (
+        <div className="p-4 space-y-3">
+          {notifications.map((notification) => (
             <div
               key={notification.id}
               className={`p-4 rounded-2xl border transition-all duration-200 hover:shadow-md cursor-pointer ${
@@ -165,53 +154,35 @@ export default function NotificationPanel() {
               }`}
               onClick={() => markAsRead(notification.id)}
             >
-              <div className='flex items-start space-x-3'>
-                <div
-                  className={`p-2 rounded-xl ${getPriorityColor(notification.priority)} text-white`}
-                >
+              <div className="flex items-start space-x-3">
+                <div className={`p-2 rounded-xl ${getPriorityColor(notification.priority)} text-white`}>
                   {getNotificationIcon(notification.type)}
                 </div>
-                <div className='flex-1 min-w-0'>
-                  <p className='text-sm font-semibold text-foreground'>
-                    {notification.title}
-                  </p>
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    {notification.message}
-                  </p>
-                  <p className='text-xs text-muted-foreground mt-2'>
-                    {notification.time}
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground">{notification.title}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{notification.message}</p>
+                  <p className="text-xs text-muted-foreground mt-2">{notification.time}</p>
                 </div>
-                {!notification.read && (
-                  <div className='w-2 h-2 bg-primary rounded-full'></div>
-                )}
+                {!notification.read && <div className="w-2 h-2 bg-primary rounded-full"></div>}
               </div>
             </div>
           ))}
         </div>
 
         {/* Activities */}
-        <div className='p-4 border-t border-border/60'>
-          <h3 className='text-sm font-bold mb-4'>Activities</h3>
-          <div className='space-y-4'>
-            {activities.map(activity => (
-              <div key={activity.id} className='flex items-center space-x-3'>
-                <Avatar className='h-8 w-8'>
+        <div className="p-4 border-t border-border/60">
+          <h3 className="text-sm font-bold mb-4">Activities</h3>
+          <div className="space-y-4">
+            {activities.map((activity) => (
+              <div key={activity.id} className="flex items-center space-x-3">
+                <Avatar className="h-8 w-8">
                   <AvatarImage src={activity.avatar} />
                   <AvatarFallback>{activity.user.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <div className='flex-1 min-w-0'>
-                  <p className='text-xs font-medium text-foreground'>
-                    {activity.user}
-                  </p>
-                  {activity.email && (
-                    <p className='text-xs text-muted-foreground'>
-                      {activity.email}
-                    </p>
-                  )}
-                  <p className='text-xs text-muted-foreground'>
-                    {activity.time}
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-foreground">{activity.user}</p>
+                  {activity.email && <p className="text-xs text-muted-foreground">{activity.email}</p>}
+                  <p className="text-xs text-muted-foreground">{activity.time}</p>
                 </div>
               </div>
             ))}
@@ -219,16 +190,16 @@ export default function NotificationPanel() {
         </div>
 
         {/* Contacts */}
-        <div className='p-4 border-t border-border/60'>
-          <h3 className='text-sm font-bold mb-4'>Contacts</h3>
-          <div className='space-y-3'>
+        <div className="p-4 border-t border-border/60">
+          <h3 className="text-sm font-bold mb-4">Contacts</h3>
+          <div className="space-y-3">
             {contacts.map((contact, index) => (
-              <div key={index} className='flex items-center space-x-3'>
-                <Avatar className='h-8 w-8'>
+              <div key={index} className="flex items-center space-x-3">
+                <Avatar className="h-8 w-8">
                   <AvatarImage src={contact.avatar} />
                   <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <span className='text-sm font-medium'>{contact.name}</span>
+                <span className="text-sm font-medium">{contact.name}</span>
               </div>
             ))}
           </div>

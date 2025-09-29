@@ -7,15 +7,13 @@ interface UseBooleanActions {
   setFalse: () => void;
 }
 
-export default function useBoolean(
-  defaultValue: boolean = false
-): [boolean, UseBooleanActions] {
+export default function useBoolean(defaultValue: boolean = false): [boolean, UseBooleanActions] {
   const [value, setValue] = useState<boolean>(defaultValue);
   return [
     value,
     {
       set: setValue,
-      toggle: () => setValue(x => !x),
+      toggle: () => setValue((x) => !x),
       setTrue: () => setValue(true),
       setFalse: () => setValue(false),
     },

@@ -7,10 +7,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     // 创建登录页面 URL
-    const loginUrl = new URL(
-      '/login',
-      process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    );
+    const loginUrl = new URL('/login', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
 
     // 创建响应并清除相关 cookies
     const response = NextResponse.redirect(loginUrl);
@@ -26,10 +23,7 @@ export async function GET() {
     console.error('登出失败:', error);
 
     // 即使出错也重定向到登录页面
-    const loginUrl = new URL(
-      '/login',
-      process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    );
+    const loginUrl = new URL('/login', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
     return NextResponse.redirect(loginUrl);
   }
 }

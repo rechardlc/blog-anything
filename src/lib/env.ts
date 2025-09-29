@@ -141,18 +141,13 @@ export const config = {
  * 在应用启动时调用以确保所有必需的配置都已设置
  */
 export function validateRequiredEnvVars(): void {
-  const requiredVars = [
-    'NEXT_PUBLIC_APP_NAME',
-    'NEXT_PUBLIC_APP_VERSION',
-    'NEXT_PUBLIC_SITE_URL',
-  ];
+  const requiredVars = ['NEXT_PUBLIC_APP_NAME', 'NEXT_PUBLIC_APP_VERSION', 'NEXT_PUBLIC_SITE_URL'];
 
-  const missingVars = requiredVars.filter(varName => !process.env[varName]);
+  const missingVars = requiredVars.filter((varName) => !process.env[varName]);
 
   if (missingVars.length > 0) {
     throw new Error(
-      `以下必需的环境变量未设置: ${missingVars.join(', ')}\n` +
-        '请检查你的 .env.local 文件或环境配置。'
+      `以下必需的环境变量未设置: ${missingVars.join(', ')}\n` + '请检查你的 .env.local 文件或环境配置。',
     );
   }
 }

@@ -198,7 +198,7 @@ Ignition 让你用模块化、可恢复的方式声明部署流程：
 // ignition/modules/Counter.ts
 import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
 
-export default buildModule('CounterModule', m => {
+export default buildModule('CounterModule', (m) => {
   const counter = m.contract('Counter');
   m.call(counter, 'incBy', [5n]);
   return { counter };

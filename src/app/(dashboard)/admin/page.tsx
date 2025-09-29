@@ -123,59 +123,55 @@ const quickActions = [
 function getStatusBadge(status: string) {
   switch (status) {
     case 'published':
-      return <Badge className='status-badge success'>已发布</Badge>;
+      return <Badge className="status-badge success">已发布</Badge>;
     case 'draft':
-      return <Badge className='status-badge warning'>草稿</Badge>;
+      return <Badge className="status-badge warning">草稿</Badge>;
     case 'review':
-      return <Badge className='status-badge info'>待审核</Badge>;
+      return <Badge className="status-badge info">待审核</Badge>;
     default:
-      return <Badge className='status-badge'>未知</Badge>;
+      return <Badge className="status-badge">未知</Badge>;
   }
 }
 
 export default function AdminDashboard() {
   return (
     <DashboardLayout>
-      <div className='space-y-8'>
+      <div className="space-y-8">
         {/* 页面标题 */}
-        <div className='page-header'>
-          <h1 className='page-title'>仪表板</h1>
-          <p className='page-description'>欢迎回来，这里是您的博客管理中心</p>
+        <div className="page-header">
+          <h1 className="page-title">仪表板</h1>
+          <p className="page-description">欢迎回来，这里是您的博客管理中心</p>
         </div>
 
         {/* 专业统计卡片 */}
-        <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
-          {stats.map(stat => (
-            <Card key={stat.title} className='snow-card'>
-              <CardContent className='p-8'>
-                <div className='flex items-center justify-between'>
-                  <div className='flex-1'>
-                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-[0.1em] mb-3'>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat) => (
+            <Card key={stat.title} className="snow-card">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.1em] mb-3">
                       {stat.title}
                     </p>
-                    <p className='text-4xl font-black mt-2'>{stat.value}</p>
-                    <div className='flex items-center mt-4 text-sm'>
+                    <p className="text-4xl font-black mt-2">{stat.value}</p>
+                    <div className="flex items-center mt-4 text-sm">
                       {stat.trend === 'up' ? (
-                        <TrendingUp className='w-5 h-5 mr-2 text-emerald-500' />
+                        <TrendingUp className="w-5 h-5 mr-2 text-emerald-500" />
                       ) : (
-                        <TrendingDown className='w-5 h-5 mr-2 text-red-500' />
+                        <TrendingDown className="w-5 h-5 mr-2 text-red-500" />
                       )}
                       <span
                         className={`font-bold text-lg ${
-                          stat.trend === 'up'
-                            ? 'text-emerald-500'
-                            : 'text-red-500'
+                          stat.trend === 'up' ? 'text-emerald-500' : 'text-red-500'
                         }`}
                       >
                         {stat.change}
                       </span>
-                      <span className='text-muted-foreground ml-2 font-medium'>
-                        {stat.description}
-                      </span>
+                      <span className="text-muted-foreground ml-2 font-medium">{stat.description}</span>
                     </div>
                   </div>
-                  <div className='p-5 rounded-3xl border border-border'>
-                    <stat.icon className='w-8 h-8 text-primary' />
+                  <div className="p-5 rounded-3xl border border-border">
+                    <stat.icon className="w-8 h-8 text-primary" />
                   </div>
                 </div>
               </CardContent>
@@ -183,74 +179,70 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <div className='grid gap-8 lg:grid-cols-2'>
+        <div className="grid gap-8 lg:grid-cols-2">
           {/* 最近文章 - SnowUI 风格 */}
-          <Card className='snow-card'>
-            <CardHeader className='pb-6'>
-              <div className='flex items-center justify-between'>
-                <CardTitle className='text-xl font-bold'>最近文章</CardTitle>
+          <Card className="snow-card">
+            <CardHeader className="pb-6">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl font-bold">最近文章</CardTitle>
                 <Button
-                  variant='outline'
-                  size='sm'
+                  variant="outline"
+                  size="sm"
                   asChild
-                  className='rounded-2xl font-semibold hover:scale-105 transition-transform'
+                  className="rounded-2xl font-semibold hover:scale-105 transition-transform"
                 >
-                  <Link href='/admin/posts'>
+                  <Link href="/admin/posts">
                     查看全部
-                    <ArrowUpRight className='w-4 h-4 ml-1' />
+                    <ArrowUpRight className="w-4 h-4 ml-1" />
                   </Link>
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className='space-y-3'>
-              {recentPosts.map(post => (
+            <CardContent className="space-y-3">
+              {recentPosts.map((post) => (
                 <div
                   key={post.id}
-                  className='flex items-center justify-between p-4 border border-border rounded-2xl hover:bg-muted transition-colors'
+                  className="flex items-center justify-between p-4 border border-border rounded-2xl hover:bg-muted transition-colors"
                 >
-                  <div className='flex-1'>
-                    <h4 className='font-semibold text-sm line-clamp-1 mb-2'>
-                      {post.title}
-                    </h4>
-                    <div className='flex items-center text-xs text-muted-foreground space-x-4'>
-                      <div className='flex items-center'>
-                        <Calendar className='w-3 h-3 mr-1' />
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm line-clamp-1 mb-2">{post.title}</h4>
+                    <div className="flex items-center text-xs text-muted-foreground space-x-4">
+                      <div className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
                         {post.date}
                       </div>
-                      <div className='flex items-center'>
-                        <Eye className='w-3 h-3 mr-1' />
+                      <div className="flex items-center">
+                        <Eye className="w-3 h-3 mr-1" />
                         {post.views.toLocaleString()}
                       </div>
                     </div>
                   </div>
-                  <div className='ml-4'>{getStatusBadge(post.status)}</div>
+                  <div className="ml-4">{getStatusBadge(post.status)}</div>
                 </div>
               ))}
             </CardContent>
           </Card>
 
           {/* 快速操作 - SnowUI 风格 */}
-          <Card className='snow-card'>
-            <CardHeader className='pb-6'>
-              <CardTitle className='text-xl font-bold'>快速操作</CardTitle>
+          <Card className="snow-card">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-xl font-bold">快速操作</CardTitle>
             </CardHeader>
-            <CardContent className='space-y-3'>
-              {quickActions.map(action => (
+            <CardContent className="space-y-3">
+              {quickActions.map((action) => (
                 <Link
                   key={action.title}
                   href={action.href}
-                  className='flex items-center p-5 border border-border rounded-2xl hover:bg-muted transition-colors group'
+                  className="flex items-center p-5 border border-border rounded-2xl hover:bg-muted transition-colors group"
                 >
                   <div className={`p-3 rounded-2xl ${action.color} mr-4`}>
-                    <action.icon className='w-5 h-5 text-white' />
+                    <action.icon className="w-5 h-5 text-white" />
                   </div>
-                  <div className='flex-1'>
-                    <h4 className='font-semibold text-sm'>{action.title}</h4>
-                    <p className='text-xs text-muted-foreground mt-1'>
-                      {action.description}
-                    </p>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm">{action.title}</h4>
+                    <p className="text-xs text-muted-foreground mt-1">{action.description}</p>
                   </div>
-                  <ArrowUpRight className='w-5 h-5 text-muted-foreground' />
+                  <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </Link>
               ))}
             </CardContent>
@@ -258,12 +250,12 @@ export default function AdminDashboard() {
         </div>
 
         {/* 最近活动 - SnowUI 风格 */}
-        <Card className='snow-card'>
-          <CardHeader className='pb-6'>
-            <CardTitle className='text-xl font-bold'>最近活动</CardTitle>
+        <Card className="snow-card">
+          <CardHeader className="pb-6">
+            <CardTitle className="text-xl font-bold">最近活动</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='space-y-4'>
+            <div className="space-y-4">
               {[
                 {
                   action: '发布了文章',
@@ -296,25 +288,19 @@ export default function AdminDashboard() {
               ].map((activity, index) => (
                 <div
                   key={index}
-                  className='flex items-center space-x-4 p-4 rounded-2xl hover:bg-accent/20 transition-all duration-200'
+                  className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-accent/20 transition-all duration-200"
                 >
-                  <div
-                    className={`p-3 ${activity.color} rounded-2xl shadow-lg`}
-                  >
-                    <Clock className='w-4 h-4 text-white' />
+                  <div className={`p-3 ${activity.color} rounded-2xl shadow-lg`}>
+                    <Clock className="w-4 h-4 text-white" />
                   </div>
-                  <div className='flex-1'>
-                    <p className='text-sm font-medium'>
-                      <span className='text-foreground'>{activity.action}</span>
-                      <span className='text-muted-foreground ml-1'>
-                        {activity.target}
-                      </span>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">
+                      <span className="text-foreground">{activity.action}</span>
+                      <span className="text-muted-foreground ml-1">{activity.target}</span>
                     </p>
-                    <p className='text-xs text-muted-foreground mt-1'>
-                      {activity.time}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
                   </div>
-                  <div className='w-2 h-2 bg-primary/60 rounded-full animate-pulse'></div>
+                  <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse"></div>
                 </div>
               ))}
             </div>

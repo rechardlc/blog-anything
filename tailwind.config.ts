@@ -173,17 +173,14 @@ const config: Config = {
       },
       boxShadow: {
         'brand-sm': '0 1px 2px 0 hsl(var(--brand-500) / 0.1)',
-        'brand-md':
-          '0 4px 6px -1px hsl(var(--brand-500) / 0.15), 0 2px 4px -2px hsl(var(--brand-500) / 0.1)',
+        'brand-md': '0 4px 6px -1px hsl(var(--brand-500) / 0.15), 0 2px 4px -2px hsl(var(--brand-500) / 0.1)',
         'brand-lg':
           '0 10px 15px -3px hsl(var(--brand-500) / 0.2), 0 4px 6px -4px hsl(var(--brand-500) / 0.1)',
         'brand-xl':
           '0 20px 25px -5px hsl(var(--brand-500) / 0.25), 0 8px 10px -6px hsl(var(--brand-500) / 0.1)',
         'primary-sm': '0 1px 2px 0 hsl(var(--primary) / 0.1)',
-        'primary-md':
-          '0 4px 6px -1px hsl(var(--primary) / 0.15), 0 2px 4px -2px hsl(var(--primary) / 0.1)',
-        'primary-lg':
-          '0 10px 15px -3px hsl(var(--primary) / 0.2), 0 4px 6px -4px hsl(var(--primary) / 0.1)',
+        'primary-md': '0 4px 6px -1px hsl(var(--primary) / 0.15), 0 2px 4px -2px hsl(var(--primary) / 0.1)',
+        'primary-lg': '0 10px 15px -3px hsl(var(--primary) / 0.2), 0 4px 6px -4px hsl(var(--primary) / 0.1)',
       },
       keyframes: {
         'accordion-down': {
@@ -239,8 +236,7 @@ const config: Config = {
         'spin-constant-slow': 'spin-constant 4s linear infinite',
         'slide-right': 'slide-right 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
         'slide-left': 'slide-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-        'theme-transition':
-          'theme-fade-in 0.3s ease-out, theme-scale 0.3s ease-out',
+        'theme-transition': 'theme-fade-in 0.3s ease-out, theme-scale 0.3s ease-out',
         'theme-fade': 'theme-fade-in 0.3s ease-out',
       },
     },

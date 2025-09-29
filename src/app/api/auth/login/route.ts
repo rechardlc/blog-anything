@@ -11,10 +11,7 @@ export async function POST(request: NextRequest) {
 
     // 基本验证
     if (!username || !password) {
-      return NextResponse.json(
-        { error: '用户名和密码都是必需的' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '用户名和密码都是必需的' }, { status: 400 });
     }
 
     // 这里应该连接到数据库进行用户验证
@@ -29,7 +26,7 @@ export async function POST(request: NextRequest) {
           user: { username, role: 'admin' },
           token: 'mock-jwt-token',
         },
-        { status: 200 }
+        { status: 200 },
       );
     }
 

@@ -1,6 +1,7 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
+import prettierPlugin from 'eslint-plugin-prettier';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,6 +12,8 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  // 关闭与 Prettier 冲突的规则
+  ...compat.extends('prettier'),
   {
     ignores: [
       'node_modules/**',
@@ -33,6 +36,9 @@ const eslintConfig = [
     ],
   },
   {
+    plugins: {
+      prettier: prettierPlugin,
+    },
     rules: {
       // 完全关闭未使用变量的 ESLint 检查
       '@typescript-eslint/no-unused-vars': 'off',
@@ -41,6 +47,18 @@ const eslintConfig = [
       // 关闭其他可能干扰的规则
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-require-imports': 'off',
+
+      // 使用 prettier 作为格式化规范来源
+      'prettier/prettier': [
+        'warn',
+        {
+          singleQuote: true,
+          trailingComma: 'all',
+          printWidth: 110,
+          semi: true,
+          tabWidth: 2,
+        },
+      ],
     },
   },
 ];

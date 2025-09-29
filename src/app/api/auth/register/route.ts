@@ -11,10 +11,7 @@ export async function POST(request: NextRequest) {
 
     // 基本验证
     if (!username || !email || !password) {
-      return NextResponse.json(
-        { error: '用户名、邮箱和密码都是必需的' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '用户名、邮箱和密码都是必需的' }, { status: 400 });
     }
 
     // 密码验证
@@ -33,10 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (passwordErrors.length > 0) {
-      return NextResponse.json(
-        { error: '密码不符合要求', details: passwordErrors },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '密码不符合要求', details: passwordErrors }, { status: 400 });
     }
 
     // 邮箱格式验证
@@ -54,7 +48,7 @@ export async function POST(request: NextRequest) {
         message: '注册成功',
         user: { username, email },
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error('注册错误:', error);

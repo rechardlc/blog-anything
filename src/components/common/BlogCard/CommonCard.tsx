@@ -1,25 +1,12 @@
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { LucideIcon } from 'lucide-react';
 
 // 卡片变体类型
-export type CardVariant =
-  | 'default'
-  | 'elevated'
-  | 'outlined'
-  | 'glass'
-  | 'gradient'
-  | 'minimal';
+export type CardVariant = 'default' | 'elevated' | 'outlined' | 'glass' | 'gradient' | 'minimal';
 
 // 卡片尺寸类型
 export type CardSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -84,12 +71,9 @@ export interface FullCardProps extends CommonCardProps {
 // 卡片变体样式映射
 const cardVariantClasses: Record<CardVariant, string> = {
   default: 'border bg-background shadow-sm',
-  elevated:
-    'border-0 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300',
-  outlined:
-    'border-2 bg-background shadow-none hover:border-brand-300 dark:hover:border-brand-600',
-  glass:
-    'border border-white/20 bg-white/10 dark:bg-black/10 backdrop-blur-md shadow-lg',
+  elevated: 'border-0 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300',
+  outlined: 'border-2 bg-background shadow-none hover:border-brand-300 dark:hover:border-brand-600',
+  glass: 'border border-white/20 bg-white/10 dark:bg-black/10 backdrop-blur-md shadow-lg',
   gradient:
     'border-0 bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900 dark:to-brand-800 shadow-lg',
   minimal: 'border-0 bg-transparent shadow-none',
@@ -142,15 +126,11 @@ export function CommonCard({
       'transform-gpu': animated,
       'active:scale-[0.98]': clickable,
     },
-    className
+    className,
   );
 
   return (
-    <Card
-      className={baseClasses}
-      onClick={clickable ? onClick : undefined}
-      {...props}
-    >
+    <Card className={baseClasses} onClick={clickable ? onClick : undefined} {...props}>
       {children}
     </Card>
   );
@@ -168,43 +148,33 @@ export function CommonCardHeader({
   actions,
 }: CardHeaderProps) {
   return (
-    <CardHeader className='space-y-3'>
-      <div className='flex items-start justify-between'>
-        <div className='flex items-center gap-3 flex-1'>
+    <CardHeader className="space-y-3">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-3 flex-1">
           {Icon && (
-            <div
-              className={cn(
-                'p-2 rounded-lg bg-brand-100 dark:bg-brand-800',
-                iconColor
-              )}
-            >
-              <Icon className='h-5 w-5' />
+            <div className={cn('p-2 rounded-lg bg-brand-100 dark:bg-brand-800', iconColor)}>
+              <Icon className="h-5 w-5" />
             </div>
           )}
-          <div className='space-y-1 flex-1'>
+          <div className="space-y-1 flex-1">
             {title && (
-              <div className='flex items-center gap-2'>
-                <CardTitle className='text-lg font-semibold leading-tight'>
-                  {title}
-                </CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-lg font-semibold leading-tight">{title}</CardTitle>
                 {badge && (
-                  <Badge
-                    variant={badge.variant || 'default'}
-                    className='text-xs'
-                  >
+                  <Badge variant={badge.variant || 'default'} className="text-xs">
                     {badge.text}
                   </Badge>
                 )}
               </div>
             )}
             {description && (
-              <CardDescription className='text-sm text-muted-foreground leading-relaxed'>
+              <CardDescription className="text-sm text-muted-foreground leading-relaxed">
                 {description}
               </CardDescription>
             )}
           </div>
         </div>
-        {actions && <div className='flex items-center gap-2'>{actions}</div>}
+        {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
     </CardHeader>
   );
@@ -213,48 +183,27 @@ export function CommonCardHeader({
 /**
  * 卡片内容组件
  */
-export function CommonCardContent({
-  children,
-  padding = 'md',
-}: CardContentProps) {
-  return (
-    <CardContent className={cn(contentPaddingClasses[padding])}>
-      {children}
-    </CardContent>
-  );
+export function CommonCardContent({ children, padding = 'md' }: CardContentProps) {
+  return <CardContent className={cn(contentPaddingClasses[padding])}>{children}</CardContent>;
 }
 
 /**
  * 卡片底部组件
  */
-export function CommonCardFooter({
-  children,
-  actions,
-  metadata,
-  alignment = 'between',
-}: CardFooterProps) {
+export function CommonCardFooter({ children, actions, metadata, alignment = 'between' }: CardFooterProps) {
   if (children) {
     return <CardFooter>{children}</CardFooter>;
   }
 
   return (
-    <CardFooter
-      className={cn(
-        'flex items-center gap-4',
-        footerAlignmentClasses[alignment]
-      )}
-    >
-      {metadata && (
-        <span className='text-xs text-muted-foreground font-medium'>
-          {metadata}
-        </span>
-      )}
+    <CardFooter className={cn('flex items-center gap-4', footerAlignmentClasses[alignment])}>
+      {metadata && <span className="text-xs text-muted-foreground font-medium">{metadata}</span>}
       {actions && (
-        <div className='flex items-center gap-2 ml-auto'>
+        <div className="flex items-center gap-2 ml-auto">
           {actions.secondary && (
             <Button
               variant={actions.secondary.variant || 'outline'}
-              size='sm'
+              size="sm"
               onClick={actions.secondary.onClick}
             >
               {actions.secondary.text}
@@ -262,10 +211,10 @@ export function CommonCardFooter({
           )}
           {actions.primary && (
             <Button
-              size='sm'
+              size="sm"
               onClick={actions.primary.onClick}
               disabled={actions.primary.disabled}
-              className='bg-brand-500 hover:bg-brand-600'
+              className="bg-brand-500 hover:bg-brand-600"
             >
               {actions.primary.loading ? '加载中...' : actions.primary.text}
             </Button>
@@ -279,12 +228,7 @@ export function CommonCardFooter({
 /**
  * 完整的卡片组件 - 包含所有部分
  */
-export function FullCard({
-  header,
-  content,
-  footer,
-  ...cardProps
-}: FullCardProps) {
+export function FullCard({ header, content, footer, ...cardProps }: FullCardProps) {
   return (
     <CommonCard {...cardProps}>
       {header && <CommonCardHeader {...header} />}

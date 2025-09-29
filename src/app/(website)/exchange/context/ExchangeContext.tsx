@@ -1,19 +1,7 @@
 'use client';
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from 'react';
-import {
-  createPublicClient,
-  createWalletClient,
-  http,
-  formatEther,
-  parseEther,
-} from 'viem';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createPublicClient, createWalletClient, http, formatEther, parseEther } from 'viem';
 import { localhost } from 'viem/chains';
 import { CONTRACT_ADDRESSES } from '@/lib/contracts';
 
@@ -209,7 +197,7 @@ interface ExchangeContextType {
     tokenGet: string,
     tokenGetAmount: string,
     tokenGive: string,
-    tokenGiveAmount: string
+    tokenGiveAmount: string,
   ) => Promise<void>;
   fillOrder: (orderHash: string) => Promise<void>;
   cancelOrder: (orderHash: string) => Promise<void>;
@@ -219,9 +207,7 @@ interface ExchangeContextType {
   error: string | null;
 }
 
-const ExchangeContext = createContext<ExchangeContextType | undefined>(
-  undefined
-);
+const ExchangeContext = createContext<ExchangeContextType | undefined>(undefined);
 
 export function ExchangeProvider({ children }: { children: ReactNode }) {
   const [address, setAddress] = useState<`0x${string}` | undefined>();
@@ -311,7 +297,7 @@ export function ExchangeProvider({ children }: { children: ReactNode }) {
               abi: EXCHANGE_ABI,
               functionName: 'balanceOf',
               args: [token.address, address],
-            })
+            }),
           );
         } else {
           // ERC20 代币余额
@@ -394,10 +380,7 @@ export function ExchangeProvider({ children }: { children: ReactNode }) {
         address: tokenAddress as `0x${string}`,
         abi: RICHARD_TOKEN_ABI,
         functionName: 'approve',
-        args: [
-          CONTRACT_ADDRESSES.EXCHANGE as `0x${string}`,
-          parseEther(amount),
-        ],
+        args: [CONTRACT_ADDRESSES.EXCHANGE as `0x${string}`, parseEther(amount)],
         account: address,
       });
 
@@ -479,7 +462,7 @@ export function ExchangeProvider({ children }: { children: ReactNode }) {
     tokenGet: string,
     tokenGetAmount: string,
     tokenGive: string,
-    tokenGiveAmount: string
+    tokenGiveAmount: string,
   ) => {
     if (!address) throw new Error('请先连接钱包');
 
@@ -567,14 +550,12 @@ export function ExchangeProvider({ children }: { children: ReactNode }) {
   // 检查钱包连接状态
   useEffect(() => {
     if (typeof window !== 'undefined' && window.ethereum) {
-      window.ethereum
-        .request({ method: 'eth_accounts' })
-        .then((accounts: string[]) => {
-          if (accounts.length > 0) {
-            setAddress(accounts[0] as `0x${string}`);
-            setIsConnected(true);
-          }
-        });
+      window.ethereum.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
+        if (accounts.length > 0) {
+          setAddress(accounts[0] as `0x${string}`);
+          setIsConnected(true);
+        }
+      });
     }
   }, []);
 
@@ -598,11 +579,7 @@ export function ExchangeProvider({ children }: { children: ReactNode }) {
     error,
   };
 
-  return (
-    <ExchangeContext.Provider value={value}>
-      {children}
-    </ExchangeContext.Provider>
-  );
+  return <ExchangeContext.Provider value={value}>{children}</ExchangeContext.Provider>;
 }
 
 export function useExchange() {

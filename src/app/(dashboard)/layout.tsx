@@ -12,10 +12,6 @@ export const metadata: Metadata = {
  * Dashboard 布局组件
  * 提供基础的元数据配置，具体布局由各个页面自己处理
  */
-export default function BackLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function BackLayout({ children }: { children: React.ReactNode }) {
   return <SessionProvider>{children}</SessionProvider>;
 }

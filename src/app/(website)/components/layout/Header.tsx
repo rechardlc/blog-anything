@@ -21,36 +21,36 @@ export default function Header() {
     { name: 'More', href: '/more', id: generateId(), active: false },
   ];
   const handleNavClick = (id: string) => {
-    setNavsList(navsList.map(n => ({ ...n, active: n.id === id })));
+    setNavsList(navsList.map((n) => ({ ...n, active: n.id === id })));
   };
   useEffect(() => {
     setNavsList(navs);
   }, []);
   return (
     <nav
-      className='flex items-center justify-between py-4 md:py-6 px-4 md:px-6 
-                    max-w-7xl mx-auto bg-background/80 backdrop-blur-sm w-full'
+      className="flex items-center justify-between py-4 md:py-6 px-4 md:px-6 
+                    max-w-7xl mx-auto bg-background/80 backdrop-blur-sm w-full"
     >
-      <div className='flex items-center space-x-3 cursor-pointer flex-shrink-0'>
+      <div className="flex items-center space-x-3 cursor-pointer flex-shrink-0">
         <Image
-          src='/avatar.jpg'
-          alt='Avatar'
+          src="/avatar.jpg"
+          alt="Avatar"
           width={40}
           height={40}
-          className='
+          className="
                      hover:animate-spin-accelerate
-                     cursor-pointer rounded'
+                     cursor-pointer rounded"
         />
         <Link
-          href='/'
-          className='text-lg font-medium text-zinc-900 dark:text-zinc-100 
+          href="/"
+          className="text-lg font-medium text-zinc-900 dark:text-zinc-100 
                         whitespace-nowrap transition-all 
-                      duration-200 hover:scale-105'
+                      duration-200 hover:scale-105"
         >
           Richard Blog
         </Link>
       </div>
-      <div className='flex-shrink-0 ml-4 flex items-center'>
+      <div className="flex-shrink-0 ml-4 flex items-center">
         <NavsList navsList={navsList} handleNavClick={handleNavClick} />
         <Search />
         <SwitchMode />

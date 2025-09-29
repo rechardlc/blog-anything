@@ -13,15 +13,7 @@ import type {
 } from '@/generated/prisma';
 
 // 重新导出基础类型
-export type {
-  Post,
-  Category,
-  Tag,
-  PostCategory,
-  PostTag,
-  PostStatus,
-  PostVisibility,
-};
+export type { Post, Category, Tag, PostCategory, PostTag, PostStatus, PostVisibility };
 
 // 导出 Prisma 生成的类型
 export type PostCreateInput = Prisma.PostCreateInput;

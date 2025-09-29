@@ -22,7 +22,7 @@ export function formatDate(
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }
+  },
 ): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   return new Intl.DateTimeFormat('zh-CN', format).format(dateObj);
@@ -79,11 +79,7 @@ export function generateSlug(text: string): string {
  * @param suffix - 后缀
  * @returns 截断后的文本
  */
-export function truncateText(
-  text: string,
-  maxLength: number,
-  suffix = '...'
-): string {
+export function truncateText(text: string, maxLength: number, suffix = '...'): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength - suffix.length) + suffix;
 }
@@ -94,10 +90,7 @@ export function truncateText(
  * @param wordsPerMinute - 每分钟阅读字数
  * @returns 阅读时间字符串
  */
-export function calculateReadTime(
-  content: string,
-  wordsPerMinute = 200
-): string {
+export function calculateReadTime(content: string, wordsPerMinute = 200): string {
   // 移除 HTML 标签和 Markdown 语法
   const cleanContent = content
     .replace(/<[^>]*>/g, '') // 移除 HTML 标签
@@ -123,7 +116,7 @@ export function calculateReadTime(
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  delay: number
+  delay: number,
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
 
@@ -141,7 +134,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
  */
 export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
-  limit: number
+  limit: number,
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
 
@@ -162,10 +155,10 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
 export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') return obj;
   if (obj instanceof Date) return new Date(obj.getTime()) as T;
-  if (obj instanceof Array) return obj.map(item => deepClone(item)) as T;
+  if (obj instanceof Array) return obj.map((item) => deepClone(item)) as T;
   if (typeof obj === 'object') {
     const copy = {} as T;
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       copy[key as keyof T] = deepClone(obj[key as keyof T]);
     });
     return copy;
@@ -179,8 +172,7 @@ export function deepClone<T>(obj: T): T {
  * @returns 随机 ID 字符串
  */
 export function generateId(length = 8): string {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
