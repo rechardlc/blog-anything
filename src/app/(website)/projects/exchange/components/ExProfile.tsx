@@ -9,10 +9,18 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Wallet, CircleDollarSign, ExternalLink, Shield, Zap } from 'lucide-react';
 import useConnWallect from '../hooks/useConnWallect';
 export default function ExProfile() {
-  const { isConnected, address, loading, error, connectWallet } = useConnWallect();
+  const { isConnected, address, loading, error, connectWallet, disconnectWallet, refreshWallet } =
+    useConnWallect();
+
+  const shortenMiddle = (value: string, head: number = 6, tail: number = 4): string => {
+    if (!value) return '';
+    if (value.length <= head + tail + 3) return value;
+    return `${value.slice(0, head)}...${value.slice(-tail)}`;
+  };
   return (
     <div className="min-w-80 space-y-6">
       {/* 钱包连接卡片 */}
@@ -36,24 +44,48 @@ export default function ExProfile() {
         </CardHeader>
 
         <CardContent className="relative z-10 pt-0 pb-4">
-          {isConnected ? (
+          {!isConnected ? (
             <Button
               onClick={connectWallet}
-              className="group/btn w-full h-12 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border-0"
+              className="snow-button group/btn w-full h-12 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white border-0 hover-glow hover-lift"
             >
-              <Wallet className="w-5 h-5 mr-2 group-hover/btn:animate-pulse" />
+              <Wallet className="w-5 h-5 mr-2 text-white/90 group-hover/btn:animate-pulse" />
               {loading ? <span>钱包连接中...</span> : <span>连接 MetaMask 钱包</span>}
-              <ExternalLink className="w-4 h-4 ml-2 opacity-70 group-hover/btn:opacity-100 transition-opacity" />
+              <ExternalLink className="w-4 h-4 ml-2 opacity-80 group-hover/btn:opacity-100 transition-opacity" />
             </Button>
           ) : (
-            <div>
-              <div>
-                <p>已连接</p>
-                <p>{address}</p>
+            <div className="space-y-4">
+              <div className="rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-border p-4 shadow-sm">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">已连接</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <p
+                        className="font-mono text-sm text-slate-800 dark:text-slate-100 truncate"
+                        title={address ?? undefined}
+                      >
+                        {shortenMiddle(address ?? '')}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent className="overflow-visible max-w-none whitespace-nowrap">
+                      <p className="font-mono text-sm text-slate-800 dark:text-slate-100">{address}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              <div className="flex gap-2">
-                <Button className="flex-1">刷新</Button>
-                <Button className="flex-1">断开</Button>
+              <div className="flex gap-3">
+                <Button
+                  className="flex-1 snow-button bg-slate-900/5 dark:bg-slate-50/10 text-slate-700 dark:text-slate-200 hover:bg-slate-900/10"
+                  onClick={refreshWallet}
+                >
+                  刷新
+                </Button>
+                <Button
+                  className="flex-1 snow-button bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
+                  onClick={disconnectWallet}
+                >
+                  断开
+                </Button>
               </div>
             </div>
           )}
