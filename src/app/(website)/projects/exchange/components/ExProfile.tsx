@@ -12,7 +12,11 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Wallet, CircleDollarSign, ExternalLink, Shield, Zap } from 'lucide-react';
 import useConnWallect from '../hooks/useConnWallect';
+import * as exchangeUtil from '../util/exchange';
+import { useMemo } from 'react';
 export default function ExProfile() {
+  // const { isConnected, address, loading, error, connectWallet, disconnectWallet, refreshWallet } =
+  //   useConnWallect();
   const { isConnected, address, loading, error, connectWallet, disconnectWallet, refreshWallet } =
     useConnWallect();
 
@@ -21,6 +25,7 @@ export default function ExProfile() {
     if (value.length <= head + tail + 3) return value;
     return `${value.slice(0, head)}...${value.slice(-tail)}`;
   };
+  globalThis.exchangeUtil = exchangeUtil;
   return (
     <div className="min-w-80 space-y-6">
       {/* 钱包连接卡片 */}

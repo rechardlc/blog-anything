@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import './richardToken.sol';
+import './RichardToken.sol';
 
 contract Exchange {
   // 收费账户地址
@@ -78,18 +78,8 @@ contract Exchange {
   }
 
   // 事件定义 - 优化 gas
-  event Deposit(
-    address indexed token,
-    address indexed user,
-    uint256 amount,
-    uint256 balance
-  );
-  event Withdraw(
-    address indexed token,
-    address indexed user,
-    uint256 amount,
-    uint256 balance
-  );
+  event Deposit(address indexed token, address indexed user, uint256 amount, uint256 balance);
+  event Withdraw(address indexed token, address indexed user, uint256 amount, uint256 balance);
   event OrderCreated(
     bytes32 indexed orderHash,
     address indexed user,
@@ -99,11 +89,7 @@ contract Exchange {
     uint256 tokenGiveAmount,
     uint256 timestamp
   );
-  event OrderCancelled(
-    bytes32 indexed orderHash,
-    address indexed user,
-    uint256 timestamp
-  );
+  event OrderCancelled(bytes32 indexed orderHash, address indexed user, uint256 timestamp);
   event OrderFilled(
     bytes32 indexed orderHash,
     address indexed user,
@@ -129,10 +115,7 @@ contract Exchange {
     tokens[_token][msg.sender] = tokens[_token][msg.sender] + _amount;
 
     // 执行转账
-    require(
-      RichardToken(_token).transferFrom(msg.sender, address(this), _amount),
-      'Transfer failed'
-    );
+    require(RichardToken(_token).transferFrom(msg.sender, address(this), _amount), 'Transfer failed');
 
     emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
   }
@@ -163,19 +146,13 @@ contract Exchange {
     tokens[_token][msg.sender] = tokens[_token][msg.sender] - _amount;
 
     // 执行转账
-    require(
-      RichardToken(_token).transfer(msg.sender, _amount),
-      'Transfer failed'
-    );
+    require(RichardToken(_token).transfer(msg.sender, _amount), 'Transfer failed');
 
     emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
   }
 
   // 查询余额 - 优化 gas
-  function balanceOf(
-    address _token,
-    address _user
-  ) public view returns (uint256) {
+  function balanceOf(address _token, address _user) public view returns (uint256) {
     return tokens[_token][_user];
   }
 
@@ -193,10 +170,7 @@ contract Exchange {
     require(_tokenGet != _tokenGive, 'Cannot trade same token');
 
     // 检查用户是否有足够的代币来创建订单
-    require(
-      tokens[_tokenGive][msg.sender] >= _tokenGiveAmount,
-      'Insufficient balance for order'
-    );
+    require(tokens[_tokenGive][msg.sender] >= _tokenGiveAmount, 'Insufficient balance for order');
 
     // 生成唯一的订单哈希
     bytes32 orderHash = generateOrderHash(
@@ -252,10 +226,7 @@ contract Exchange {
   // 成交订单 - 使用哈希 ID
   function fillOrder(bytes32 _orderHash) public nonReentrant {
     require(orders[_orderHash].user != address(0), 'Order not found');
-    require(
-      orders[_orderHash].tokenGiveAmount > 0,
-      'Order tokenGiveAmount is 0'
-    );
+    require(orders[_orderHash].tokenGiveAmount > 0, 'Order tokenGiveAmount is 0');
 
     Order storage order = orders[_orderHash];
     require(!order.filled, 'Order already filled');
@@ -266,10 +237,7 @@ contract Exchange {
     uint256 feeAmount = (order.tokenGetAmount * feePercentage) / 10000;
 
     // 流动池子是否有足够的代币
-    require(
-      tokens[order.tokenGive][order.user] >= order.tokenGiveAmount,
-      'Order owner insufficient balance'
-    );
+    require(tokens[order.tokenGive][order.user] >= order.tokenGiveAmount, 'Order owner insufficient balance');
     require(
       tokens[order.tokenGet][msg.sender] >= order.tokenGetAmount + feeAmount,
       'Filler insufficient balance'
@@ -277,9 +245,7 @@ contract Exchange {
 
     // 计算成交比例: 1 RTK: 100ETH 关系， 固定关系,后期左流动池子，动态换算
     // 手续费账户增加
-    tokens[order.tokenGet][feeAccount] =
-      tokens[order.tokenGet][feeAccount] +
-      feeAmount;
+    tokens[order.tokenGet][feeAccount] = tokens[order.tokenGet][feeAccount] + feeAmount;
     // 发起者减少
     // tokens[order.tokenGet][msg.sender] = tokens[order.tokenGet][msg.sender].sub(feeAmount);
 
@@ -287,30 +253,18 @@ contract Exchange {
     // 先更新余额，再转账（防止重入攻击）
     // get是获取的币，give是减少的币
     // 创建者的币，tokenget币应该是增加
-    tokens[order.tokenGet][order.user] =
-      tokens[order.tokenGet][order.user] +
-      order.tokenGetAmount;
+    tokens[order.tokenGet][order.user] = tokens[order.tokenGet][order.user] + order.tokenGetAmount;
     // 发起者是币，tokenGet币应该是减少
     tokens[order.tokenGet][msg.sender] =
       tokens[order.tokenGet][msg.sender] -
       (order.tokenGetAmount + feeAmount);
     // 币币交换
-    tokens[order.tokenGive][order.user] =
-      tokens[order.tokenGive][order.user] -
-      order.tokenGiveAmount;
+    tokens[order.tokenGive][order.user] = tokens[order.tokenGive][order.user] - order.tokenGiveAmount;
     // 发起者是币，tokenGive币应该是减少
-    tokens[order.tokenGive][msg.sender] =
-      tokens[order.tokenGive][msg.sender] +
-      order.tokenGiveAmount;
+    tokens[order.tokenGive][msg.sender] = tokens[order.tokenGive][msg.sender] + order.tokenGiveAmount;
     // 更新订单状态
     order.filled = true;
-    emit OrderFilled(
-      _orderHash,
-      order.user,
-      msg.sender,
-      order.tokenGetAmount,
-      block.timestamp
-    );
+    emit OrderFilled(_orderHash, order.user, msg.sender, order.tokenGetAmount, block.timestamp);
   }
 
   // 获取订单信息（通过哈希）

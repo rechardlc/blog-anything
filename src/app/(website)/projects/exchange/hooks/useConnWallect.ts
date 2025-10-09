@@ -1,11 +1,32 @@
-import { BrowserProvider, Signer, ethers } from 'ethers';
+import {
+  BrowserProvider,
+  Signer,
+  ethers,
+  JsonRpcProvider,
+  StaticJsonRpcProvider,
+  IpcProvider,
+  Eip1193Provider,
+  WebSocketProvider,
+  AlchemyProvider,
+  InfuraProvider,
+  FallbackProvider,
+  WalletConnectProvider,
+  Web3Provider,
+} from 'ethers';
 import { useState, useEffect } from 'react';
+type wallectConnect = {
+  address: string;
+  loading: boolean;
+  provider: BrowserProvider | null;
+  signer: Signer | null;
+};
 export const useConnWallect = (walletType = 'ethereum') => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [address, setAddress] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [signer, setSigner] = useState<Signer | null>(null);
-  const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [walletConnect, setWalletConnect] = useState<wallectConnect>({
+    address: '',
+    loading: false,
+    provider: null,
+    signer: null,
+  });
   const [error, setError] = useState<string | null>(null);
   const [balance, setBalance] = useState<string>('0');
   const [network, setNetwork] = useState<{ chainId: number; name?: string } | null>(null);
@@ -16,35 +37,23 @@ export const useConnWallect = (walletType = 'ethereum') => {
       setError(`${walletType} is not supported`);
       return;
     }
-    setLoading(true);
+    setWalletConnect({ address: '', loading: true, provider: null, signer: null });
     try {
       const provider = new BrowserProvider(wallet);
       await provider.send('eth_requestAccounts', []);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
-      const wei = await provider.getBalance(address);
-      const net = await provider.getNetwork();
-      setAddress(address);
-      setSigner(signer);
-      setProvider(provider);
-      setIsConnected(true);
-      console.log(ethers.formatEther(wei), net.chainId, net.name, 'wallet-info');
-      // setBalance(ethers.formatEther(wei));
-      // setNetwork({ chainId: Number(net.chainId), name: net.name });
-      // console.log({ balance: ethers.formatEther(wei), network: net }, 'wallet-info');
+      setWalletConnect({ address, loading: false, provider, signer });
       window[walletType as keyof Window].on('accountsChanged', handleAccountsChanged);
       window[walletType as keyof Window].on('chainChanged', handleChainChanged);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setWalletConnect({ address: '', loading: false, provider: null, signer: null });
     }
   };
   const disconnectWallet = () => {
-    setIsConnected(false);
-    setAddress(null);
-    setSigner(null);
-    setProvider(null);
+    setWalletConnect({ address: '', loading: false, provider: null, signer: null });
     setError(null);
   };
   const refreshWallet = () => {
@@ -54,7 +63,7 @@ export const useConnWallect = (walletType = 'ethereum') => {
   const handleAccountsChanged = (accounts: string[]) => {
     try {
       const next = accounts?.[0] ?? null;
-      setAddress(next);
+      setWalletConnect({ address: next, loading: false, provider: null, signer: null });
       if (next && provider) {
         provider.getBalance(next).then((wei) => setBalance(ethers.formatEther(wei)));
       } else {
