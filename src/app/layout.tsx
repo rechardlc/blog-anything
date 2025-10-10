@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import '@/styles/globals.css';
 import { config, validateRequiredEnvVars, checkEnvConfig } from '@/lib/env';
 import ThemeProvider from '@/components/providers/ThemeProvider';
+import { Toaster } from 'sonner';
 
 // 验证必需的环境变量
 validateRequiredEnvVars();
@@ -67,6 +68,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <Toaster position="top-center" richColors closeButton expand={true} duration={3000} />
         </ThemeProvider>
       </body>
     </html>
