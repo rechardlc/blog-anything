@@ -10,16 +10,35 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Wallet, CircleDollarSign, ExternalLink, Shield, Zap } from 'lucide-react';
+import { Wallet, CircleDollarSign, ExternalLink, Shield, Zap, Loader2, AlertCircle } from 'lucide-react';
 import useConnWallect from '../hooks/useConnWallect';
+import useExchange from '../hooks/useExchange';
 import * as exchangeUtil from '../util/exchange';
+import { BrowserProvider } from 'ethers';
+import { useState } from 'react';
+
 export default function ExProfile() {
+  const [depositLoading, setDepositLoading] = useState<{
+    eth: boolean;
+    rtk: boolean;
+  }>({
+    eth: false,
+    rtk: false,
+  });
+  const [depositAmount, setDepositAmount] = useState<{
+    eth: string;
+    rtk: string;
+  }>({
+    eth: '0.1',
+    rtk: '100',
+  });
+  const [depositError, setDepositError] = useState<string>('');
   const {
     isConnected,
     address,
     loading,
     error,
-    balance,
+    provider,
     tokenBalance,
     // exchangeBalance,
     connectWallet,
@@ -27,12 +46,70 @@ export default function ExProfile() {
     refreshWallet,
     // fetchAllBalances,
   } = useConnWallect();
+  const { transferEther, transferToken } = useExchange(provider as BrowserProvider);
+
   // 缩短地址
   const shortenMiddle = (value: string, head: number = 6, tail: number = 4): string => {
     if (!value) return '';
     if (value.length <= head + tail + 3) return value;
     return `${value.slice(0, head)}...${value.slice(-tail)}`;
   };
+
+  // 处理ETH存入
+  const handleDepositETH = async () => {
+    if (!isConnected) {
+      setDepositError('请先连接钱包');
+      return;
+    }
+    if (!depositAmount.eth || parseFloat(depositAmount.eth) <= 0) {
+      setDepositError('请输入有效的ETH数量');
+      return;
+    }
+
+    setDepositLoading((prev) => ({ ...prev, eth: true }));
+    setDepositError('');
+
+    try {
+      await transferEther(depositAmount.eth);
+      // 成功后刷新余额并重置输入框
+      refreshWallet();
+      setDepositAmount((prev) => ({ ...prev, eth: '0.1' }));
+      setDepositError(''); // 清除错误信息
+    } catch (error: any) {
+      setDepositError(`存入ETH失败: ${error.message}`);
+    } finally {
+      setDepositLoading((prev) => ({ ...prev, eth: false }));
+    }
+  };
+
+  // 处理RTK存入
+  const handleDepositRTK = async () => {
+    if (!isConnected) {
+      setDepositError('请先连接钱包');
+      return;
+    }
+    if (!depositAmount.rtk || parseFloat(depositAmount.rtk) <= 0) {
+      setDepositError('请输入有效的RTK数量');
+      return;
+    }
+
+    setDepositLoading((prev) => ({ ...prev, rtk: true }));
+    setDepositError('');
+
+    try {
+      // 这里需要实现RTK存入逻辑
+      // await transferToken(address, depositAmount.rtk);
+      // 模拟成功情况，重置输入框
+      setDepositAmount((prev) => ({ ...prev, rtk: '100' }));
+      setDepositError(''); // 清除错误信息
+      // 注意：RTK功能还在开发中，这里只是演示重置逻辑
+    } catch (error: any) {
+      setDepositError(`存入RTK失败: ${error.message}`);
+    } finally {
+      setDepositLoading((prev) => ({ ...prev, rtk: false }));
+    }
+  };
+
   (globalThis as any).exchangeUtil = exchangeUtil;
   return (
     <div className="min-w-80 space-y-6">
@@ -244,26 +321,114 @@ export default function ExProfile() {
                 </div>
               </div>
 
-              {/* 操作按钮 - 紧凑布局 */}
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-2">
+              {/* 操作按钮 存入和提取 */}
+              <div className="space-y-3">
+                {/* 错误提示 */}
+                {depositError && (
+                  <div className="rounded-lg bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-2">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="w-3 h-3 text-red-500" />
+                      <p className="text-xs text-red-700 dark:text-red-300">{depositError}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 存入ETH */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">ETH</span>
+                    </div>
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">存入ETH</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={depositAmount.eth}
+                      onChange={(e) => setDepositAmount((prev) => ({ ...prev, eth: e.target.value }))}
+                      placeholder="0.1"
+                      className="flex-1 px-2 py-1 text-xs border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={depositLoading.eth}
+                    />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={handleDepositETH}
+                            disabled={
+                              depositLoading.eth ||
+                              !isConnected ||
+                              !depositAmount.eth ||
+                              parseFloat(depositAmount.eth) <= 0
+                            }
+                            className="snow-button bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 text-xs py-1 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {depositLoading.eth ? <Loader2 className="w-3 h-3 animate-spin" /> : '存入'}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>存入ETH到交易所</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                </div>
+
+                {/* 存入RTK */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">RTK</span>
+                    </div>
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">存入RTK</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      step="1"
+                      min="0"
+                      value={depositAmount.rtk}
+                      onChange={(e) => setDepositAmount((prev) => ({ ...prev, rtk: e.target.value }))}
+                      placeholder="100"
+                      className="flex-1 px-2 py-1 text-xs border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      disabled={depositLoading.rtk}
+                    />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={handleDepositRTK}
+                            disabled={
+                              depositLoading.rtk ||
+                              !isConnected ||
+                              !depositAmount.rtk ||
+                              parseFloat(depositAmount.rtk) <= 0
+                            }
+                            className="snow-button bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700 text-xs py-1 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {depositLoading.rtk ? <Loader2 className="w-3 h-3 animate-spin" /> : '存入'}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>存入RTK到交易所</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                </div>
+
+                {/* 其他操作按钮 */}
+                <div className="grid grid-cols-2 gap-2 pt-2">
                   <Button
                     className="snow-button bg-gradient-to-r from-indigo-500 to-indigo-600 text-white hover:from-indigo-600 hover:to-indigo-700 text-xs py-2"
                     onClick={refreshWallet}
                   >
                     刷新余额
                   </Button>
-                  <Button className="snow-button bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700 text-xs py-2">
-                    存入资金
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
                   <Button className="snow-button bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 text-xs py-2">
                     提取资金
-                  </Button>
-                  <Button className="snow-button bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 text-xs py-2">
-                    交易历史
                   </Button>
                 </div>
               </div>
