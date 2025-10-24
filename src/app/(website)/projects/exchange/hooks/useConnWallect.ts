@@ -43,6 +43,7 @@ export const useConnWallect = (walletType = 'ethereum') => {
   // const isConnected = useMemo(() => walletConnect.address !== '', [walletConnect.address]);
 
   const connectWallet = async () => {
+    console.log('connectWallet|||||:', walletConnect);
     // 防止重复点击
     if (walletConnect.loading) {
       toast.warning('正在连接中，请稍候...', {
@@ -71,6 +72,10 @@ export const useConnWallect = (walletType = 'ethereum') => {
       window[walletType as keyof Window].on('accountsChanged', handleAccountsChanged);
       // 监听钱包链变化
       window[walletType as keyof Window].on('chainChanged', handleChainChanged);
+      toast.success('连接钱包成功', {
+        duration: 3000,
+        position: 'top-center',
+      });
     } catch (error) {
       setWalletConnect((prev) => ({ ...prev, loading: false }));
       const errorObj = JSON.parse(JSON.stringify(error));
@@ -89,10 +94,16 @@ export const useConnWallect = (walletType = 'ethereum') => {
   const disconnectWallet = () => {
     setWalletConnect({ address: '', loading: false, provider: null, signer: null });
     setError(null);
+    toast.warning('您已经断开了钱包连接', {
+      duration: 3000,
+      position: 'top-center',
+    });
   };
   const refreshWallet = () => {
-    disconnectWallet();
-    connectWallet();
+    // 只刷新余额，不重新连接钱包
+    if (walletConnect.provider && walletConnect.address) {
+      fetchAllBalances(walletConnect.provider, walletConnect.address);
+    }
   };
   const fetchAllBalances = async (provider: BrowserProvider, address: string) => {
     // 获取ETH余额
@@ -114,6 +125,7 @@ export const useConnWallect = (walletType = 'ethereum') => {
     }));
   };
   const handleAccountsChanged = useCallback(async (accounts: string[]) => {
+    console.log('handleAccountsChanged|||||:', accounts);
     try {
       const next = accounts?.[0] ?? null;
       const currentWalletConnect = walletConnectRef.current; // 使用 ref 获取最新状态

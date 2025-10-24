@@ -46,7 +46,7 @@ export default function ExProfile() {
     refreshWallet,
     // fetchAllBalances,
   } = useConnWallect();
-  const { transferEther, transferToken } = useExchange(provider as BrowserProvider);
+  const { transferEther, transferToken, exchangeBalance } = useExchange(provider as BrowserProvider);
 
   // 缩短地址
   const shortenMiddle = (value: string, head: number = 6, tail: number = 4): string => {
@@ -98,7 +98,7 @@ export default function ExProfile() {
 
     try {
       // 这里需要实现RTK存入逻辑
-      // await transferToken(address, depositAmount.rtk);
+      await transferToken(depositAmount.rtk);
       // 模拟成功情况，重置输入框
       setDepositAmount((prev) => ({ ...prev, rtk: '100' }));
       setDepositError(''); // 清除错误信息
@@ -292,7 +292,9 @@ export default function ExProfile() {
                       <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mx-auto mb-1">
                         <span className="text-white text-xs font-bold">ETH</span>
                       </div>
-                      <p className="text-xs font-bold text-blue-800 dark:text-blue-200">0.0000</p>
+                      <p className="text-xs font-bold text-blue-800 dark:text-blue-200">
+                        {exchangeBalance.eth}
+                      </p>
                       <p className="text-xs text-blue-600/70 dark:text-blue-400/70">ETH</p>
                     </div>
                   </div>
@@ -303,7 +305,9 @@ export default function ExProfile() {
                       <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-1">
                         <span className="text-white text-xs font-bold">RTK</span>
                       </div>
-                      <p className="text-xs font-bold text-emerald-800 dark:text-emerald-200">0.00</p>
+                      <p className="text-xs font-bold text-emerald-800 dark:text-emerald-200">
+                        {exchangeBalance.rtk}
+                      </p>
                       <p className="text-xs text-emerald-600/70 dark:text-emerald-400/70">RTK</p>
                     </div>
                   </div>

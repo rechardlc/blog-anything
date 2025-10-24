@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import './richardToken.sol';
+import './RichardToken.sol';
 
 contract Exchange {
   // 收费账户地址
